@@ -1,0 +1,1340 @@
+<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101119"><title>AMADO XP</title><style>
+*{box-sizing:border-box}body{margin:0;background:#0d0f16;color:#f6f6fa;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:540px;margin:auto;padding:26px 18px 110px}h1{font-size:29px;margin:6px 0 20px}h2{font-size:18px;margin:0 0 14px}.muted{color:#989baa;font-size:13px}.card{background:#191c28;border:1px solid #2a2e3d;border-radius:20px;padding:18px;margin:13px 0}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid .card{margin:0}.big{font-size:25px;font-weight:750;margin:7px 0}.bar{height:10px;border-radius:20px;background:#303346;overflow:hidden;margin:13px 0}.bar>div{height:100%;background:#8980ff;width:0}.blue>div{background:#5ab4ff}button,input,select{font:inherit}button{border:0;background:#7167ef;color:white;padding:12px 16px;border-radius:12px;font-weight:650;cursor:pointer}button.secondary{background:#303449}button.danger{background:transparent;color:#ff9292;padding:6px}input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #3a3d50;background:#242838;color:white;margin:7px 0 12px}label{display:block;color:#c6c7d2;font-size:13px}.entry{border-top:1px solid #303346;padding:13px 0}.entry:first-child{border-top:0}nav{position:fixed;bottom:0;left:0;right:0;background:#171a25;border-top:1px solid #34384a;display:flex;justify-content:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));gap:3px}nav button{background:none;color:#a2a4b5;padding:9px 2px;flex:1;max-width:76px;font-size:9px}nav button span{display:block;font-size:18px;margin-bottom:4px}nav button.active{background:#343052;color:white}.hidden{display:none}.pill{color:#b3acff;font-weight:700}.day{border-top:1px solid #303346;padding:12px 0}.day:first-child{border:0}.smallbutton{padding:9px 12px}.hint{line-height:1.5}
+.rewardHero{text-align:center;padding:24px 18px}
+.rewardIcon{font-size:48px;margin-bottom:8px}
+.rewardCount{font-size:34px;font-weight:800;margin:8px 0}
+.rewardReady{border-color:#7068ff;box-shadow:0 0 0 1px #7068ff inset}
+.rewardUsed{opacity:.7}
+
+.histGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0}
+.histStat{background:#191c28;border:1px solid #2a2e3d;border-radius:18px;padding:15px}
+.histStat .icon{font-size:20px}.histStat .value{font-size:22px;font-weight:800;margin:7px 0 3px}
+.chartCard{background:#191c28;border:1px solid #2a2e3d;border-radius:20px;padding:18px;margin:13px 0}
+.chartTitle{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}
+.chart{height:150px;display:flex;align-items:flex-end;gap:7px;border-bottom:1px solid #303346;padding:0 2px}
+.chartCol{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}
+.chartBarWrap{height:112px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.chartBar{width:min(22px,75%);min-height:3px;border-radius:7px 7px 2px 2px;background:#8980ff;transition:.25s}
+.chartBar.water{background:#5ab4ff}.chartBar.train{background:#8fe1b0}
+.chartLabel{font-size:10px;color:#8f93a5;white-space:nowrap}
+.chartValue{font-size:9px;color:#c7c9d4;min-height:11px}
+.goalRing{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#8980ff var(--p),#303346 0);margin:auto}
+.goalRing:after{content:"";width:56px;height:56px;border-radius:50%;background:#191c28;position:absolute}
+.goalRing span{z-index:1;font-weight:800;font-size:13px}
+.periodTabs{display:flex;gap:7px;margin-top:12px}.periodTabs button.selected{background:#7167ef}
+
+.daySelector{position:sticky;top:0;z-index:20;background:rgba(13,15,22,.94);backdrop-filter:blur(14px);margin:-26px -18px 18px;padding:12px 18px;border-bottom:1px solid #242838}
+.daySelectorInner{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:504px;margin:auto}
+.daySelector button{padding:9px 12px;background:#303449}
+.daySelector .datePick{flex:1;text-align:center;background:#191c28;border:1px solid #34384a}
+.daySelector input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.mealMode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:7px 0 12px}
+.mealMode button{background:#303449}.mealMode button.selected{background:#7167ef}
+.notice{padding:12px;border-radius:12px;background:#242838;margin:8px 0 12px;line-height:1.45}
+.notice.warn{border:1px solid #795b4d}.notice.good{border:1px solid #4f745d}
+.penalty{color:#ffb28d;font-weight:700}
+
+.placeMode{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:7px 0 12px}
+.placeMode button{background:#303449;padding:10px 6px;font-size:12px}.placeMode button.selected{background:#7167ef}
+.restaurantCard{border-top:1px solid #303346;padding:15px 0}.restaurantCard:first-child{border-top:0}
+.stars{font-size:18px;letter-spacing:1px}.restaurantMeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.tag{font-size:11px;padding:5px 8px;border-radius:20px;background:#303449;color:#c9cad4}
+.segment{display:flex;gap:7px;margin-bottom:14px}.segment button{flex:1;background:#303449}.segment button.selected{background:#7167ef}
+textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #3a3d50;background:#242838;color:white;margin:7px 0 12px;font:inherit;resize:vertical;min-height:72px}
+
+.muscleGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:7px 0 12px}
+.muscleGrid button{background:#303449;font-size:12px;padding:10px 7px}
+.muscleGrid button.selected{background:#7167ef}
+
+.scoreLegend{display:grid;gap:7px;margin:10px 0 14px}
+.scoreRule{display:flex;justify-content:space-between;gap:10px;padding:9px 11px;border-radius:10px;background:#242838;font-size:12px}
+.scorePositive{font-weight:800}.scoreNegative{font-weight:800}
+.sweetToggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sweetToggle button{background:#303449}.sweetToggle button.selected{background:#7167ef}
+.weekExercise{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.weekExercise>div{text-align:center;padding:10px 5px;border-radius:12px;background:#242838}
+
+.historyFilters{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.historyFilters button{background:#303449;padding:9px 4px;font-size:11px}
+.historyFilters button.selected{background:#7167ef}
+.sleepChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.sleepChoices button{background:#303449;font-size:11px;padding:9px 5px}
+.sleepChoices button.selected{background:#7167ef}
+
+.spendChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.spendChoices button{background:#303449;padding:12px 7px;font-size:12px}
+.spendChoices button.selected{background:#7167ef}
+.breakfastChoices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:7px 0 12px}
+.breakfastChoices button{background:#303449}.breakfastChoices button.selected{background:#7167ef}
+</style>
+<style id="v23-dark-flat">
+:root{
+  --bg:#171a18;
+  --bg2:#1d211e;
+  --panel:#242925;
+  --line:#303631;
+  --text:#f1f3f1;
+  --muted:#929a94;
+  --green:#63c98c;
+  --green-soft:#22382b;
+  --blue:#6eafe8;
+  --purple:#a391df;
+  --red:#e2777f;
+  --gold:#d8b566;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+body{background:var(--bg)!important}
+.app{max-width:700px!important}
+header{
+  background:rgba(23,26,24,.95)!important;
+  border-bottom:1px solid var(--line)!important;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+h1{color:var(--text)!important;font-weight:800!important;letter-spacing:-.04em!important}
+h2{color:#e6e9e6!important;font-weight:720!important;letter-spacing:-.02em!important}
+.muted{color:var(--muted)!important}
+
+/* Normal content should not look like a floating card */
+.card{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding-left:2px!important;
+  padding-right:2px!important;
+  padding-top:15px!important;
+  padding-bottom:18px!important;
+  margin-bottom:0!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.card:last-child{border-bottom:0!important}
+
+/* Actual data rows / summaries retain a subtle contained shape */
+.entry{
+  background:var(--bg2)!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+.row{gap:10px!important}
+
+button{
+  border-radius:11px!important;
+  font-weight:680!important;
+  box-shadow:none!important;
+}
+button:not(.secondary):not(.danger){
+  background:var(--green)!important;
+  color:#112017!important;
+  border-color:var(--green)!important;
+}
+button.secondary{
+  background:#222723!important;
+  color:#d8ddd9!important;
+  border:1px solid #3a413b!important;
+}
+button.secondary.selected,.selected{
+  background:var(--green-soft)!important;
+  color:#8de0ad!important;
+  border-color:#47775a!important;
+}
+button.danger{
+  background:#342326!important;
+  color:var(--red)!important;
+  border:1px solid #593238!important;
+}
+input,select,textarea{
+  background:#202421!important;
+  color:var(--text)!important;
+  border:1px solid #3a403b!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none!important;
+  border-color:#629d76!important;
+  box-shadow:0 0 0 2px rgba(99,201,140,.09)!important;
+}
+.progress,.bar{
+  background:#2a2f2b!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+}
+.progress>div,.bar>div,#xpbar{background:var(--green)!important;border-radius:999px!important}
+#waterbar{background:var(--blue)!important}
+.notice{
+  background:#202521!important;
+  border:1px solid #343b35!important;
+  color:#bbc2bc!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+.notice.good{background:#1f3025!important;border-color:#345c41!important;color:#9bd8af!important}
+.notice.warn{background:#30281e!important;border-color:#59452d!important;color:#dfbd8b!important}
+
+nav{
+  background:rgba(23,26,24,.97)!important;
+  border-top:1px solid var(--line)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+nav button{
+  background:transparent!important;
+  color:#858e87!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+nav button.active{
+  color:var(--green)!important;
+  background:#222b25!important;
+}
+#homewater{color:var(--blue)!important}
+#hometrain{color:var(--purple)!important}
+#homexp,#totalxp,#dailyPointsTotal{color:var(--green)!important}
+.stars button{color:var(--gold)!important}
+.scoreRule{
+  background:transparent!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.scoreRule:last-child{border-bottom:0!important}
+.scoreRule b{color:var(--green)!important}
+#dailyPointsBreakdown .entry{
+  background:transparent!important;
+  border:0!important;
+  border-bottom:1px solid var(--line)!important;
+  border-radius:0!important;
+  padding-left:0!important;padding-right:0!important;
+}
+#dailyPointsBreakdown .entry:last-child{border-bottom:0!important}
+section{animation:flatFade .16s ease}
+@keyframes flatFade{from{opacity:.6}to{opacity:1}}
+@media(max-width:600px){
+  body{font-size:15px!important}
+  .app{padding-left:16px!important;padding-right:16px!important}
+  .card{padding-top:14px!important;padding-bottom:17px!important}
+  h1{font-size:27px!important}
+  h2{font-size:17px!important}
+  nav{padding-bottom:max(7px,env(safe-area-inset-bottom))!important}
+}
+</style>
+
+
+<style id="v24-entry-spacing-fix">
+/* Registos: dar espaço real ao conteúdo dentro da moldura */
+.entry{
+  padding-top:14px!important;
+  padding-bottom:14px!important;
+  padding-left:14px!important;
+  padding-right:14px!important;
+  line-height:1.35!important;
+}
+.entry > div:first-child{
+  min-width:0;
+}
+.entry b{
+  display:inline-block;
+  margin-bottom:2px;
+}
+.entry .muted{
+  line-height:1.45!important;
+}
+
+/* Nas linhas com ações, manter o botão centrado sem apertar o texto */
+.entry.row{
+  align-items:center!important;
+  column-gap:14px!important;
+}
+.entry.row > button,
+.entry.row > .danger{
+  align-self:center!important;
+  flex-shrink:0!important;
+}
+
+/* Listas de registos precisam de uma separação limpa entre itens */
+.list .entry,
+#workoutList .entry,
+#mealList .entry{
+  margin-bottom:10px!important;
+}
+</style>
+
+
+<style id="v25-date-muscle-fix">
+/* Seletor de dia: controlo discreto, não uma fila de CTAs verdes */
+.daySelector{
+  background:var(--bg)!important;
+  border:0!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:none!important;
+  padding:10px 16px 11px!important;
+}
+.daySelectorInner{
+  gap:8px!important;
+  max-width:520px!important;
+  margin:0 auto!important;
+  align-items:center!important;
+}
+.daySelectorInner button{
+  background:#222723!important;
+  color:#d8ddd9!important;
+  border:1px solid #363d37!important;
+  box-shadow:none!important;
+  min-height:40px!important;
+}
+.daySelectorInner > button:first-child,
+.daySelectorInner > button:nth-of-type(4){
+  width:40px!important;
+  min-width:40px!important;
+  padding:0!important;
+  font-size:20px!important;
+}
+.daySelectorInner .datePick{
+  flex:1!important;
+  background:transparent!important;
+  border:0!important;
+  color:#f0f2f0!important;
+  font-size:15px!important;
+  padding:8px 10px!important;
+}
+.daySelectorInner > button:nth-of-type(3){
+  background:#252b27!important;
+  color:var(--green)!important;
+  border-color:#3b5142!important;
+  padding-left:14px!important;
+  padding-right:14px!important;
+}
+
+/* Ginásio: grupos musculares neutros; verde só quando escolhidos */
+.muscleGrid button{
+  background:#222723!important;
+  color:#c9cfca!important;
+  border:1px solid #373e38!important;
+  box-shadow:none!important;
+}
+.muscleGrid button.selected{
+  background:var(--green-soft)!important;
+  color:#8de0ad!important;
+  border-color:#4b805e!important;
+}
+</style>
+
+
+<style id="v26-green-only-selected">
+/* REGRA GLOBAL: verde significa seleção/estado ativo, nunca botão genérico */
+button:not(.danger),
+button.secondary,
+.daySelectorInner button,
+nav button{
+  background:#222723!important;
+  color:#d9ded9!important;
+  border:1px solid #383f39!important;
+  box-shadow:none!important;
+}
+
+/* Botões de ação continuam neutros */
+button:not(.danger):hover{
+  background:#282e29!important;
+}
+
+/* Verde exclusivamente para escolhas selecionadas */
+button.selected,
+.secondary.selected,
+.segment button.selected,
+.sweetToggle button.selected,
+.muscleGrid button.selected{
+  background:var(--green-soft)!important;
+  color:#8de0ad!important;
+  border-color:#4b805e!important;
+}
+
+/* Navegação: aba atual indicada de forma subtil, sem bloco verde */
+nav button.active{
+  background:#222723!important;
+  color:var(--green)!important;
+  border-color:#222723!important;
+}
+
+/* Data: nenhum botão preenchido a verde */
+.daySelectorInner .datePick{
+  background:transparent!important;
+  color:#f0f2f0!important;
+  border:0!important;
+}
+.daySelectorInner > button:nth-of-type(3){
+  background:#222723!important;
+  color:#b9c1bb!important;
+  border-color:#383f39!important;
+}
+
+/* As opções do ginásio só ficam verdes quando selecionadas */
+.muscleGrid button{
+  background:#222723!important;
+  color:#c9cfca!important;
+  border:1px solid #373e38!important;
+}
+.muscleGrid button.selected{
+  background:var(--green-soft)!important;
+  color:#8de0ad!important;
+  border-color:#4b805e!important;
+}
+
+/* Escolhas de refeição/local: neutralizar estado normal */
+.segment button,
+.sweetToggle button{
+  background:#222723!important;
+  color:#d9ded9!important;
+  border:1px solid #383f39!important;
+}
+.segment button.selected,
+.sweetToggle button.selected{
+  background:var(--green-soft)!important;
+  color:#8de0ad!important;
+  border-color:#4b805e!important;
+}
+</style>
+
+
+<style id="v27-selection-specificity-fix">
+/*
+  Correção definitiva de prioridade CSS.
+  Os estilos antigos tinham seletores mais específicos, por isso continuavam verdes.
+*/
+
+/* TODOS os botões começam neutros */
+html body button:not(.danger),
+html body button:not(.secondary):not(.danger),
+html body .segment button,
+html body .sweetToggle button,
+html body .muscleGrid button,
+html body .daySelectorInner button {
+  background:#222723!important;
+  color:#d9ded9!important;
+  border:1px solid #383f39!important;
+  box-shadow:none!important;
+}
+
+/* Apenas escolhas efetivamente selecionadas ficam verdes */
+html body button.selected,
+html body button.secondary.selected,
+html body .segment button.selected,
+html body .sweetToggle button.selected,
+html body .muscleGrid button.selected {
+  background:#2d6543!important;
+  color:#b9f0cc!important;
+  border-color:#55976c!important;
+}
+
+/* Data central é apenas informação, não seleção */
+html body .daySelectorInner .datePick {
+  background:transparent!important;
+  color:#f0f2f0!important;
+  border:0!important;
+}
+
+/* Hoje e setas = ações neutras */
+html body .daySelectorInner > button:first-child,
+html body .daySelectorInner > button:nth-of-type(3),
+html body .daySelectorInner > button:nth-of-type(4) {
+  background:#222723!important;
+  color:#d9ded9!important;
+  border:1px solid #383f39!important;
+}
+
+/* Navegação: sem fundo verde; apenas texto/ícone da secção atual */
+html body nav button,
+html body nav button.active {
+  background:transparent!important;
+  border-color:transparent!important;
+}
+html body nav button { color:#8f9891!important; }
+html body nav button.active { color:var(--green)!important; }
+
+/* Apagar mantém semântica vermelha */
+html body button.danger {
+  background:#342326!important;
+  color:var(--red)!important;
+  border:1px solid #593238!important;
+}
+</style>
+
+
+<style id="v28-selected-state-final">
+/* Estado selecionado: esta regra fica por último e ganha a qualquer regra neutra anterior */
+html body button.selected,
+html body button:not(.danger).selected,
+html body button:not(.secondary):not(.danger).selected,
+html body .segment button.selected,
+html body .sweetToggle button.selected,
+html body .muscleGrid button.selected,
+html body #smallMealGoodBtn.selected,
+html body #smallMealBadBtn.selected,
+html body #healthyMealBtn.selected,
+html body #balancedMealBtn.selected,
+html body #badMealBtn.selected,
+html body #placeHome.selected,
+html body #placeRestaurant.selected,
+html body #placeDelivery.selected,
+html body #noSweetsBtn.selected,
+html body #yesSweetsBtn.selected {
+  background:#2f8f59!important;
+  color:#ffffff!important;
+  border-color:#65bd84!important;
+  box-shadow:0 0 0 1px rgba(101,189,132,.12)!important;
+}
+
+/* Ginásio: reforço específico para múltipla seleção */
+html body .muscleGrid button[data-muscle].selected {
+  background:#2f8f59!important;
+  color:#ffffff!important;
+  border-color:#65bd84!important;
+}
+</style>
+
+
+<style id="amado-xp-final-brand">
+.amadoBrand{
+  padding:18px 0 20px;
+  margin-bottom:4px;
+}
+.amadoBrand h1{
+  margin:0!important;
+  font-size:32px!important;
+  line-height:1!important;
+  letter-spacing:-.045em!important;
+  font-weight:850!important;
+  color:#f2f5f2!important;
+}
+.amadoTagline{
+  margin-top:7px;
+  color:var(--green)!important;
+  font-size:14px;
+  font-style:italic;
+  letter-spacing:.01em;
+}
+.homeProgressTitle{
+  margin-top:4px!important;
+  margin-bottom:12px!important;
+  font-size:16px!important;
+  color:#b8c0ba!important;
+  font-weight:650!important;
+}
+</style>
+
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#171a18">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AMADO XP">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
+</head><body><main>
+<div class="daySelector">
+  <div class="daySelectorInner">
+    <button onclick="moveSelectedDay(-1)">‹</button>
+    <button class="datePick" onclick="$('datePicker').showPicker ? $('datePicker').showPicker() : $('datePicker').click()"><span id="selectedDateLabel">Hoje</span> 📅</button>
+    <button onclick="goToday()">Hoje</button>
+    <button onclick="moveSelectedDay(1)">›</button>
+    <input id="datePicker" type="date">
+  </div>
+</div>
+<section id="home"><div class="muted" id="date"></div>
+<div class="amadoBrand">
+  <h1>AMADO XP</h1>
+  <div class="amadoTagline">Level up your life.</div>
+</div>
+<h2 class="homeProgressTitle">O teu progresso</h2><span class="muted" id="totalxp"></span></div><div class="grid"><div class="card"><div class="muted">💧 Água no dia</div><div class="big" id="homewater">0 ml</div><div class="muted">Objetivo: 2500 ml</div></div><div class="card"><div class="muted">🏋️ Treino no dia</div><div class="big" id="hometrain">0 min</div><div class="muted" id="traincount">0 treinos</div></div><div class="card"><div class="muted">🍽️ Refeições</div><div class="big" id="homemeals">0</div><div class="muted">Registadas no dia</div></div><div class="card"><div class="muted">🏅 Pontos do dia</div><div class="big" id="homexp">0</div><div class="muted">Continua assim!</div></div></div>
+<div class="card">
+  <h2>🧮 Pontos de hoje</h2>
+  <div id="dailyPointsBreakdown"></div>
+  <div class="entry row" style="margin-top:10px"><b>Total do dia</b><b id="dailyPointsTotal">0 pontos</b></div>
+</div>
+<div class="card"><h2>🎯 Missões do dia</h2><div id="missions"></div></div><div class="card"><h2>📊 Esta semana</h2><div id="weekly"></div></div>
+<div class="card">
+  <h2>🏅 Pontos</h2>
+  <div class="row"><div><div class="muted">Total acumulado</div><div class="big" id="pointsTotal">0</div></div><div style="text-align:right"><div class="muted">Próximo prémio</div><b id="reward75Progress">0 / 75</b></div></div>
+  <div class="progress"><i id="reward75Bar"></i></div>
+  <p class="muted">Cada 75 pontos desbloqueia 🎟️ 1 refeição livre.</p>
+</div>
+
+
+
+<div class="card"><h2>ℹ️ Como funcionam os pontos</h2><p class="muted">Os pontos vêm dos teus registos diários e dos bónus semanais. Cada <b>75 pontos</b> desbloqueia 🎟️ 1 refeição livre.</p></div><div class="card"><div class="row"><b id="level">Nível 1</b><span class="pill" id="xp">0 / 75 pontos</span></div><div class="bar"><div id="xpbar"></div></div>
+</section>
+<section id="food" class="hidden"><div class="muted">REGISTOS</div><h1>🍽️ Alimentação</h1></div><div class="card"><h2>Adicionar refeição</h2><form id="foodform"><label>Tipo de refeição<select id="mealtype" onchange="renderMealMode()">
+<option value="Pequeno-almoço">☕ Pequeno-almoço</option>
+<option value="Lanche da manhã">🍎 Lanche da manhã</option>
+<option value="Almoço" selected>🍽️ Almoço</option>
+<option value="Lanche da tarde">🥪 Lanche da tarde</option>
+<option value="Jantar">🌙 Jantar</option>
+<option value="Ceia">🥛 Ceia</option>
+</select></label><div id="breakfastRule" class="notice hidden">☕ <b>Pequeno-almoço:</b> OK = +1 ponto · Mau = −1 ponto.</div>
+<div id="smallMealChoices" class="hidden">
+  <label>Como foi esta refeição?</label>
+  <div class="breakfastChoices">
+    <button type="button" id="smallMealGoodBtn" onclick="setSmallMealMode('ok')">✓ OK · 0</button>
+    <button type="button" id="smallMealBadBtn" onclick="setSmallMealMode('bad')">🍩 Mau · −1</button>
+  </div>
+</div>
+<div id="normalMealChoices">
+<label>Qualidade da refeição</label>
+<div class="placeMode">
+  <button type="button" id="healthyMealBtn" class="selected" onclick="setMealMode('healthy')">🥗 Saudável · +3</button>
+  <button type="button" id="balancedMealBtn" onclick="setMealMode('balanced')">⚖️ Equilibrada · +2</button>
+  <button type="button" id="badMealBtn" onclick="setMealMode('bad')">🍕 Má · 0</button>
+</div>
+<div id="mealRewardInfo" class="notice good">
+  🥗 <b>Saudável:</b> refeição nutritiva e alinhada com o objetivo. Vale +3 pontos.
+</div>
+</div><label>Onde comeste?</label>
+<div class="placeMode">
+  <button type="button" id="placeHome" class="selected" onclick="setMealPlace('home')">🏠 Casa</button>
+  <button type="button" id="placeRestaurant" onclick="setMealPlace('restaurant')">🍴 Restaurante</button>
+  <button type="button" id="placeDelivery" onclick="setMealPlace('delivery')">🛵 Mandar vir</button>
+</div>
+<div id="restaurantMealFields" class="hidden">
+  <label>Restaurante<input id="mealrestaurant" placeholder="Ex.: Nome do restaurante" maxlength="120"></label>
+</div>
+<label>O que comeste?<input id="mealdesc" placeholder="Ex.: Frango, arroz e salada" required maxlength="300"></label><button type="submit">Guardar refeição</button></form></div><div class="card"><h2>Refeições do dia</h2><div id="foodlist"></div></div>
+<div class="card">
+  <h2>🍬 Doces no dia</h2>
+  <p class="muted">Conta separadamente das refeições. Se comeres doces neste dia: −3 pontos.</p>
+  <div class="sweetToggle">
+    <button id="noSweetsBtn" onclick="setSweets(false)">✓ Não comi · 0</button>
+    <button id="yesSweetsBtn" onclick="setSweets(true)">🍬 Comi · −3</button>
+  </div>
+</div>
+
+<div class="card"><h2>ℹ️ Pontos das refeições</h2><div class="scoreLegend">
+<div class="scoreRule"><span>Almoço/Jantar saudável</span><b>+3</b></div>
+<div class="scoreRule"><span>Almoço/Jantar equilibrado</span><b>+2</b></div>
+<div class="scoreRule"><span>Almoço/Jantar mau/livre</span><b>0</b></div>
+<div class="scoreRule"><span>Pequeno-almoço, lanches e ceia OK</span><b>0</b></div>
+<div class="scoreRule"><span>Pequeno-almoço, lanches e ceia maus</span><b>−1</b></div>
+<div class="scoreRule"><span>Comeu doces no dia</span><b>−3</b></div></div>
+</section>
+<section id="exercise" class="hidden"><div class="muted">REGISTOS</div><h1>🏋️ Exercício</h1></div><div class="card"><h2>Adicionar treino</h2><form id="trainform">
+<label>Exercício
+<select id="trainname" onchange="renderGymFields()">
+<option value="Ginásio">🏋️ Ginásio</option>
+<option value="Corrida">🏃 Corrida</option>
+<option value="Caminhada">🚶 Caminhada</option>
+<option value="Bicicleta">🚴 Bicicleta</option>
+<option value="Futebol">⚽ Futebol</option>
+<option value="Natação">🏊 Natação</option>
+<option value="Outro">➕ Outro</option>
+</select>
+</label>
+<div id="gymFields">
+<label>Que grupos treinaste?</label>
+<div class="muscleGrid">
+<button type="button" data-muscle="Braços" onclick="toggleMuscle(this)">💪 Braços</button>
+<button type="button" data-muscle="Pernas" onclick="toggleMuscle(this)">🦵 Pernas</button>
+<button type="button" data-muscle="Abdómen" onclick="toggleMuscle(this)">🔥 Abdómen</button>
+<button type="button" data-muscle="Peito" onclick="toggleMuscle(this)">🫀 Peito</button>
+<button type="button" data-muscle="Costas" onclick="toggleMuscle(this)">🔙 Costas</button>
+<button type="button" data-muscle="Ombros" onclick="toggleMuscle(this)">🏋️ Ombros</button>
+<button type="button" data-muscle="Corpo inteiro" onclick="toggleMuscle(this)">⚡ Corpo inteiro</button>
+</div>
+</div>
+<div id="distanceField" class="hidden"><label>Distância em quilómetros (km)<input id="traindistance" type="number" min="0.1" max="500" step="0.1" placeholder="Ex.: 5"></label></div>
+<label id="durationField">Duração (minutos)<input id="trainduration" type="number" min="1" max="1440" required placeholder="45"></label>
+<button type="submit">Guardar treino</button>
+</form></div><div class="card"><h2>Treinos do dia</h2><div id="trainlist"></div></div>
+<div class="card">
+  <h2>🏆 Pontuação semanal</h2>
+  <div class="weekExercise">
+    <div><b id="weekGym">0/3</b><div class="muted">🏋️ Ginásio</div></div>
+    <div><b id="weekRun">0/3</b><div class="muted">🏃 Corrida</div></div>
+    <div><b id="weekTotal">0/6</b><div class="muted">Total</div></div><div><b id="weekKm">0/20 km</b><div class="muted">🏃🚶 km semana</div></div>
+  </div>
+  <div id="exerciseScoreInfo" class="notice"></div>
+  <div class="scoreLegend">
+    <div class="scoreRule"><span>≥3 ginásio + ≥3 corrida</span><b>+10</b></div>
+    <div class="scoreRule"><span>≥6, mas sem 3/3</span><b>+7</b></div>
+    <div class="scoreRule"><span>5 treinos</span><b>+4</b></div>
+    <div class="scoreRule"><span>4 treinos</span><b>0</b></div>
+    <div class="scoreRule"><span>3 ou menos</span><b>−5</b></div><div class="scoreRule"><span>≥20 km corrida + caminhada / semana</span><b>+2 extra</b></div>
+  </div>
+</div>
+</section>
+<section id="water" class="hidden"><div class="muted">REGISTOS</div><h1>💧 Água</h1></div><div class="card"><div class="big" id="wateramount">0 / 2500 ml</div><div class="bar blue"><div id="waterbar"></div></div><div class="row"><button type="button" onclick="addWater(250)">+250 ml</button><button type="button" onclick="addWater(500)">+500 ml</button></div><div style="margin-top:12px"><button type="button" class="secondary smallbutton" onclick="addWater(-250)">−250 ml</button></div></div><div class="card"><h2>Consumo nos últimos 7 dias</h2><div id="waterweek"></div></div>
+<div class="card"><h2>ℹ️ Pontos da água</h2><div class="scoreLegend">
+<div class="scoreRule"><span>≥2,5 L</span><b>+3</b></div>
+<div class="scoreRule"><span>≥2,0 L</span><b>+2</b></div>
+<div class="scoreRule"><span>≥1,5 L</span><b>+1</b></div>
+<div class="scoreRule"><span>&lt;1,5 L</span><b>0</b></div></div>
+</section>
+<section id="history" class="hidden">
+<div class="muted">EVOLUÇÃO</div><h1>📊 O teu progresso</h1>
+
+<div class="histGrid">
+  <div class="histStat"><div class="icon">⭐</div><div class="value" id="histpontos">0</div><div class="muted">pontos ganhos</div></div>
+  <div class="histStat"><div class="icon">🏋️</div><div class="value" id="histTrain">0</div><div class="muted">Treinos</div></div>
+  <div class="histStat"><div class="icon">⏱️</div><div class="value" id="histMinutes">0</div><div class="muted">Minutos ativos</div></div>
+  <div class="histStat"><div class="icon">💧</div><div class="value" id="histWater">0 L</div><div class="muted">Água média / dia</div></div>
+</div>
+
+<div class="chartCard">
+  <div class="chartTitle"><div><h2 style="margin:0">⭐ pontos</h2><div class="muted">Progresso ao longo do período</div></div></div>
+  <div class="chart" id="xpChart"></div>
+</div>
+
+<div class="chartCard">
+  <div class="chartTitle"><div><h2 style="margin:0">💧 Água</h2><div class="muted">Objetivo diário: 2,5 L</div></div><b id="waterGoalDays">0 dias ✓</b></div>
+  <div class="chart" id="waterChart"></div>
+</div>
+
+<div class="chartCard">
+  <div class="chartTitle"><div><h2 style="margin:0">🏋️ Exercício</h2><div class="muted">Minutos por dia</div></div></div>
+  <div class="chart" id="trainChart"></div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div><h2 style="margin-bottom:5px">🎯 Consistência</h2><div class="muted">Dias com todas as missões cumpridas</div></div>
+    <div class="goalRing" id="consistencyRing"><span id="consistencyText">0%</span></div>
+  </div>
+</div>
+
+<p class="muted hint">Os detalhes das refeições e dos treinos continuam disponíveis nas respetivas tabs.</p>
+<button class="secondary" onclick="exportData()">Exportar cópia dos dados</button>
+
+<div class="card"><h2>ℹ️ Pontuação no histórico</h2><p class="muted">O histórico junta os pontos diários e os bónus/penalizações semanais. Usa Dia, Semana, Mês ou Ano para analisar períodos diferentes.</p></div>
+<div class="historyFilters">
+  <button data-hperiod="day" onclick="setHistoryPeriod('day')">Dia</button>
+  <button data-hperiod="week" class="selected" onclick="setHistoryPeriod('week')">Semana</button>
+  <button data-hperiod="month" onclick="setHistoryPeriod('month')">Mês</button>
+  <button data-hperiod="year" onclick="setHistoryPeriod('year')">Ano</button>
+</div>
+<div class="card">
+  <div class="row"><button class="secondary smallbutton" onclick="movePeriod(-1)">‹</button><b id="periodtitle"></b><button class="secondary smallbutton" onclick="movePeriod(1)">›</button></div>
+  <div class="periodTabs"><button id="weekBtn" class="secondary smallbutton selected" onclick="setPeriod('week')">Semana</button><button id="monthBtn" class="secondary smallbutton" onclick="setPeriod('month')">Mês</button></div>
+</div>
+</section>
+
+
+<section id="sleep" class="hidden">
+<div class="muted">RECUPERAÇÃO</div><h1>😴 Sono</h1>
+<div class="card">
+  <h2>Horas de sono</h2>
+  <p class="muted">Regista as horas dormidas no dia selecionado.</p>
+  <label>Horas dormidas<input id="sleepHours" type="number" min="0" max="24" step="0.25" placeholder="Ex.: 7.5"></label>
+  <button type="button" id="saveSleepBtn" onclick="saveSleep()">Guardar sono</button>
+  <div id="sleepScoreInfo" class="notice">7–8 h = +1 · menos de 7 h = −1 · mais de 8 h = 0</div>
+</div>
+<div class="card">
+  <h2>🎯 Regra</h2>
+  <div class="scoreLegend">
+    <div class="scoreRule"><span>7 a 8 horas</span><b>+1</b></div>
+    <div class="scoreRule"><span>Menos de 7 horas</span><b>−1</b></div>
+    <div class="scoreRule"><span>Mais de 8 horas</span><b>0</b></div>
+  </div>
+</div>
+</section>
+
+<section id="spending" class="hidden">
+<div class="muted">CONTROLO DIÁRIO</div><h1>💸 Gastos</h1>
+<div class="card">
+  <h2>Como foram os gastos?</h2>
+  <p class="muted">Escolhe a opção que melhor representa o dia selecionado.</p>
+  <div class="spendChoices">
+    <button id="spendNone" onclick="setSpending('none')">💚 Não gastei nada<br><b>+2</b></button>
+    <button id="spendNecessary" onclick="setSpending('necessary')">✓ Só o necessário<br><b>0</b></button>
+    <button id="spendLittle" onclick="setSpending('little')">🟡 Gastei pouco<br><b>−2</b></button>
+    <button id="spendMuch" onclick="setSpending('much')">🔴 Gastei muito<br><b>−5</b></button>
+  </div>
+  <div id="spendingInfo" class="notice">Ainda não classificaste os gastos deste dia.</div>
+</div>
+<div class="card">
+  <h2>🎯 Pontuação</h2>
+  <div class="scoreLegend">
+    <div class="scoreRule"><span>Não gastei nada</span><b>+2</b></div>
+    <div class="scoreRule"><span>Apenas o necessário</span><b>0</b></div>
+    <div class="scoreRule"><span>Gastei pouco</span><b>−2</b></div>
+    <div class="scoreRule"><span>Gastei muito</span><b>−5</b></div>
+  </div>
+</div>
+</section>
+<section id="restaurants" class="hidden">
+<div class="muted">O TEU GUIA</div><h1>🍴 Restaurantes</h1>
+  <div class="histStat"><div class="icon">🔖</div><div class="value" id="wishlistCount">0</div><div class="muted">Quero ir</div></div>
+  <div class="histStat"><div class="icon">⭐</div><div class="value" id="restaurantAvg">—</div><div class="muted">Avaliação média</div></div>
+  <div class="histStat"><div class="icon">🍽️</div><div class="value" id="visitCount">0</div><div class="muted">Visitas registadas</div></div>
+</div>
+
+<div class="card">
+  <h2>Adicionar restaurante</h2>
+  <form id="restaurantForm">
+    <label>Nome<input id="restaurantName" required maxlength="120" placeholder="Nome do restaurante"></label>
+    <label>Estado<select id="restaurantStatus"><option value="wishlist">Quero ir</option><option value="visited">Já fui</option></select></label>
+    <label>Nota<textarea id="restaurantNote" maxlength="400" placeholder="Ex.: experimentar o hambúrguer, recomendado por..."></textarea></label>
+    <button type="submit">Guardar restaurante</button>
+  </form>
+</div>
+
+<div class="segment">
+  <button id="visitedTab" class="selected" onclick="setRestaurantView('visited')">✅ Já fui</button>
+  <button id="wishlistTab" onclick="setRestaurantView('wishlist')">🔖 Quero ir</button>
+</div>
+<div class="card"><div id="restaurantList"></div></div>
+
+<div class="card"><h2>ℹ️ Pontos</h2><p class="muted">Os restaurantes não dão nem retiram pontos. Esta área serve para guardar onde já foste, avaliações e locais que queres experimentar.</p></div>
+<div class="histGrid">
+  <div class="histStat"><div class="icon">✅</div><div class="value" id="visitedCount">0</div><div class="muted">Já fui</div></div>
+</section>
+<section id="rewards" class="hidden">
+<div class="muted">PRÉMIOS</div><h1>🎁 Recompensas</h1>
+  <p class="muted">O Pontos totais não é gasto. As recompensas são acumuladas separadamente.</p>
+</div>
+<div class="card">
+  <h2>Histórico</h2>
+  <div id="rewardhistory"></div>
+</div>
+
+<div class="card"><h2>ℹ️ Pontos e prémios</h2><p class="muted">Cada <b>75 pontos</b> acumulados desbloqueia 🎟️ 1 refeição livre. Os prémios podem acumular e são usados nas refeições más/livres.</p></div>
+<div class="card rewardHero" id="rewardhero">
+  <div class="rewardIcon">🍕</div>
+  <div class="muted">REFEIÇÕES LIVRES DISPONÍVEIS</div>
+  <div class="rewardCount" id="rewardcount">0</div>
+  <p class="muted">Cada 75 pontos desbloqueia uma refeição livre.</p>
+  <button id="usereward" onclick="useReward()">Usar refeição livre</button>
+</div>
+<div class="card">
+  <h2>Próxima recompensa</h2>
+  <div class="row"><b id="rewardprogress">0 / 75 pontos</b><span class="pill" id="rewardmissing">Faltam 75 pontos</span></div>
+  <div class="bar"><div id="rewardbar"></div></div>
+</section></main><nav><button data-tab="home" class="active"><span>🏠</span>Início</button><button data-tab="food"><span>🍽️</span>Comida</button><button data-tab="exercise"><span>🏋️</span>Treino</button><button data-tab="water"><span>💧</span>Água</button><button data-tab="sleep"><span>😴</span>Sono</button><button data-tab="spending"><span>💸</span>Gastos</button><button data-tab="restaurants"><span>🍴</span>Restaurantes</button><button data-tab="rewards"><span>🎁</span>Prémios</button><button data-tab="history"><span>📊</span>Histórico</button></nav><script>
+const $=id=>document.getElementById(id),storage='amadoXPFinalV1',goal=2500;
+let db={};try{db=JSON.parse(localStorage.getItem(storage))||{}}catch{}
+let period='week',offset=0,selectedDate=new Date(),mealMode='healthy',smallMealMode='ok',mealPlace='home',restaurantView='visited';
+function key(d=new Date()){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function day(k=key(selectedDate)){
+  let d=db[k];
+  if(!d||typeof d!=='object'||Array.isArray(d))d={};
+  if(!Array.isArray(d.meals))d.meals=[];
+  if(!Array.isArray(d.workouts))d.workouts=[];
+  d.water=Number(d.water)||0;
+  return d;
+}
+function save(){
+  try{localStorage.setItem(storage,JSON.stringify(db))}
+  catch(err){console.error('Erro ao guardar:',err);alert('Não foi possível guardar neste navegador.')}
+  render();
+}
+function edit(fn){let k=key(selectedDate);db[k]=day(k);fn(db[k]);save()}
+function waterLitres(d){return (Number(d?.water)||0)/1000}
+function workoutMinutes(d){return Array.isArray(d?.workouts)?d.workouts.reduce((s,w)=>s+(Number(w.min)||0),0):0}
+function waterPoints(d){
+  let w=Number(d?.water)||0;
+  return w>=2500?3:w>=2000?2:w>=1500?1:0;
+}
+function mealPoints(m){
+  let bp=smallMealPoints(m);if(bp!==null)return bp;
+  if(m?.mode==='healthy')return 3;
+  if(m?.mode==='balanced'||m?.mode==='normal'||!m?.mode)return 2;
+  return 0;
+}
+function foodPoints(d){return Array.isArray(d?.meals)?d.meals.reduce((s,m)=>s+mealPoints(m),0):0}
+function sweetsPoints(d){return d?.sweets===true?-3:0}
+
+
+function spendingPoints(d){
+  let s=d?.spending;
+  return s==='none'?2:s==='little'?-2:s==='much'?-5:0;
+}
+
+function sleepPoints(d){
+  let h=Number(d?.sleep);
+  if(!Number.isFinite(h)||h<=0)return 0;
+  return h>=7&&h<=8?1:h<7?-1:0;
+}
+function isSmallMeal(m){
+  let t=String(m?.type||'').toLocaleLowerCase('pt-PT');
+  return t.includes('pequeno-almoço')||t.includes('lanche da manhã')||t.includes('lanche da tarde')||t==='lanche'||t.includes('ceia');
+}
+function smallMealPoints(m){if(!isSmallMeal(m))return null;return m?.mode==='bad'?-1:0}
+function weekDistanceKm(start){
+  let total=0;
+  dates(7,start).forEach(dt=>(day(key(dt)).workouts||[]).forEach(w=>{
+    let t=String(w.type||'').toLocaleLowerCase('pt-PT');
+    if(t.includes('corrida')||t.includes('caminhada'))total+=Number(w.km)||0;
+  }));
+  return total;
+}
+function distanceWeekPoints(start){return weekDistanceKm(start)>=20?2:0}
+function dailyPoints(d){return waterPoints(d)+foodPoints(d)+sweetsPoints(d)+sleepPoints(d)+spendingPoints(d)}
+function weekExerciseStats(start){
+  let ds=dates(7,start),gym=0,run=0,total=0;
+  ds.forEach(dt=>(day(key(dt)).workouts||[]).forEach(w=>{
+    let t=String(w.type||'').toLocaleLowerCase('pt-PT');
+    if(t.includes('ginásio')||t.includes('ginasio')||t.includes('musculação')||t.includes('musculacao')){gym++;total++}
+    else if(t.includes('corrida')){run++;total++}
+  }));
+  return {gym,run,total};
+}
+function exerciseWeekPoints(start){
+  let s=weekExerciseStats(start);
+  if(s.gym>=3&&s.run>=3)return 10;
+  if(s.total>=6)return 7;
+  if(s.total===5)return 4;
+  if(s.total<=3)return -5;
+  return 0;
+}
+function isCompletedWeek(start){
+  let end=new Date(start.getFullYear(),start.getMonth(),start.getDate()+6);
+  let today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+  return end<today;
+}
+function countedExerciseWeekPoints(start){
+  let p=exerciseWeekPoints(start);
+  if(isCompletedWeek(start))return p;
+  return Math.max(0,p);
+}
+function allDateKeys(){return Object.keys(db).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort()}
+function allWeekStarts(){
+  let seen=new Set();
+  allDateKeys().forEach(k=>seen.add(key(startWeek(parseLocalDate(k)))));
+  return [...seen].sort();
+}
+function totalPoints(){
+  let daily=allDateKeys().reduce((s,k)=>s+dailyPoints(day(k)),0);
+  let weekly=allWeekStarts().reduce((s,k)=>s+countedExerciseWeekPoints(parseLocalDate(k))+distanceWeekPoints(parseLocalDate(k)),0);
+  return daily+weekly;
+}
+
+function rewardUses(){return Array.isArray(db._rewardsUsed)?db._rewardsUsed:[]}
+function rewardPenalty(){return 0}
+function rewardPoints(){return Math.max(0,totalPoints())}
+function earnedRewards(){return Math.floor(rewardPoints()/75)}
+function availableRewards(){return Math.max(0,earnedRewards()-rewardUses().length)}
+function useReward(){
+  if(availableRewards()<1)return;
+  if(!Array.isArray(db._rewardsUsed))db._rewardsUsed=[];
+  db._rewardsUsed.push({date:new Date().toISOString(),label:'Refeição livre'});
+  save();
+}
+
+function escape(s){let el=document.createElement('span');el.textContent=String(s);return el.innerHTML}
+
+
+function restaurants(){if(!db._restaurants||typeof db._restaurants!=='object'||Array.isArray(db._restaurants))db._restaurants={};return db._restaurants}
+function restaurantId(name){return String(name).trim().toLocaleLowerCase('pt-PT')}
+function touchRestaurant(name,date,source){
+  name=String(name||'').trim();if(!name)return;
+  let rs=restaurants(),id=restaurantId(name),r=rs[id]||{name,status:'visited',rating:0,note:'',visits:[]};
+  r.name=name;r.status='visited';if(!Array.isArray(r.visits))r.visits=[];
+  r.visits.push({date:key(date),source:source||'restaurant'});
+  rs[id]=r;
+}
+function undoRestaurantVisit(name,date){
+  let rs=restaurants(),r=rs[restaurantId(name)];if(!r||!Array.isArray(r.visits))return;
+  let k=key(date),i=r.visits.findIndex(v=>v.date===k);if(i>=0)r.visits.splice(i,1);
+}
+function parseLocalDate(v){let [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d)}
+function updateDateSelector(){
+  let today=key(new Date()),sel=key(selectedDate);
+  $('selectedDateLabel').textContent=sel===today?'Hoje':selectedDate.toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'});
+  $('datePicker').value=sel;
+}
+function moveSelectedDay(n){selectedDate=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate()+n);render()}
+function goToday(){selectedDate=new Date();render()}
+$('datePicker').onchange=e=>{if(e.target.value){selectedDate=parseLocalDate(e.target.value);render()}}
+
+
+let selectedMuscles=[];
+function isGymType(){
+  let el=$('trainname');
+  if(!el)return false;
+  let txt=(el.options[el.selectedIndex]?.text||el.value||'').toLocaleLowerCase('pt-PT');
+  return txt.includes('ginásio')||txt.includes('ginasio')||txt.includes('musculação')||txt.includes('musculacao');
+}
+function renderGymFields(){
+  if(!$('gymFields'))return;
+  let el=$('trainname'),txt=(el?.options[el.selectedIndex]?.text||el?.value||'').toLocaleLowerCase('pt-PT');
+  let gym=txt.includes('ginásio')||txt.includes('ginasio')||txt.includes('musculação')||txt.includes('musculacao');
+  let distance=txt.includes('corrida')||txt.includes('caminhada')||txt.includes('bicicleta');
+  $('gymFields').classList.toggle('hidden',!gym);
+  if($('distanceField'))$('distanceField').classList.toggle('hidden',!distance);
+  if($('durationField'))$('durationField').classList.toggle('hidden',distance);
+  if(!gym){selectedMuscles=[];document.querySelectorAll('[data-muscle]').forEach(b=>b.classList.remove('selected'))}
+}
+function toggleMuscle(btn){
+  let m=btn.dataset.muscle,i=selectedMuscles.indexOf(m);
+  if(i>=0)selectedMuscles.splice(i,1);else selectedMuscles.push(m);
+  btn.classList.toggle('selected');
+}
+
+function setMealPlace(place){mealPlace=place;renderMealPlace()}
+function renderMealPlace(){
+  if(!$('placeHome'))return;
+  $('placeHome').classList.toggle('selected',mealPlace==='home');
+  $('placeRestaurant').classList.toggle('selected',mealPlace==='restaurant');
+  $('placeDelivery').classList.toggle('selected',mealPlace==='delivery');
+  $('restaurantMealFields').classList.toggle('hidden',mealPlace==='home');
+}
+
+function setSmallMealMode(v){smallMealMode=v;renderMealMode()}
+
+function setMealMode(mode){mealMode=mode;renderMealMode()}
+function renderMealMode(){
+  if(!$('healthyMealBtn'))return;
+  let type=$('mealtype')?.value||'';
+  let small=['Pequeno-almoço','Lanche da manhã','Lanche da tarde','Lanche','Ceia'].includes(type);
+  if($('smallMealChoices'))$('smallMealChoices').classList.toggle('hidden',!small);
+  if($('normalMealChoices'))$('normalMealChoices').classList.toggle('hidden',small);
+  if($('breakfastRule'))$('breakfastRule').classList.add('hidden');
+  $('smallMealGoodBtn').classList.toggle('selected',smallMealMode==='ok');
+  $('smallMealBadBtn').classList.toggle('selected',smallMealMode==='bad');
+  $('healthyMealBtn').classList.toggle('selected',mealMode==='healthy');
+  $('balancedMealBtn').classList.toggle('selected',mealMode==='balanced');
+  $('badMealBtn').classList.toggle('selected',mealMode==='bad');
+  if(small)return;
+  let info=$('mealRewardInfo');
+  if(mealMode==='healthy'){info.className='notice good';info.innerHTML='🥗 <b>Saudável:</b> +3 pontos.'}
+  else if(mealMode==='balanced'){info.className='notice';info.innerHTML='⚖️ <b>Equilibrada:</b> +2 pontos.'}
+  else if(availableRewards()>0){info.className='notice good';info.innerHTML='🍕 <b>Má/livre:</b> 0 pontos. Será usado 1 prémio.'}
+  else{info.className='notice warn';info.innerHTML='🍕 <b>Má/livre:</b> 0 pontos e fica registada sem prémio.'}
+}
+function setSweets(v){
+  let k=key(selectedDate);db[k]=day(k);db[k].sweets=!!v;save();
+}
+function renderSweets(d){
+  if(!$('noSweetsBtn'))return;
+  $('noSweetsBtn').classList.toggle('selected',d.sweets!==true);
+  $('yesSweetsBtn').classList.toggle('selected',d.sweets===true);
+}
+function addWater(n){edit(d=>d.water=Math.max(0,d.water+n))}
+$('foodform').onsubmit=e=>{
+  e.preventDefault();
+  let mealType=$('mealtype').value;
+  let small=['Pequeno-almoço','Lanche da manhã','Lanche da tarde','Lanche','Ceia'].includes(mealType);
+  let chosenMode=small?smallMealMode:mealMode;
+  let isBad=!small&&chosenMode==='bad',usedReward=false;
+  let restaurantName=mealPlace==='home'?'':$('mealrestaurant').value.trim();
+  if(mealPlace!=='home'&&!restaurantName){alert('Indica o nome do restaurante.');return}
+  if(isBad&&availableRewards()>0){
+    if(!Array.isArray(db._rewardsUsed))db._rewardsUsed=[];
+    db._rewardsUsed.push({date:new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate(),12).toISOString(),label:'Refeição má/livre'});
+    usedReward=true;
+  }
+  let k=key(selectedDate);db[k]=day(k);
+  db[k].meals.push({type:$('mealtype').value,desc:$('mealdesc').value.trim(),mode:chosenMode,rewardUsed:usedReward,place:mealPlace,restaurant:restaurantName});
+  if(restaurantName)touchRestaurant(restaurantName,selectedDate,mealPlace);
+  localStorage.setItem(storage,JSON.stringify(db));
+  $('mealdesc').value='';$('mealrestaurant').value='';$('mealtype').value='Almoço';mealMode='healthy';smallMealMode='ok';mealPlace='home';render();
+};
+$('trainform').onsubmit=e=>{
+  e.preventDefault();
+  let type=$('trainname').value,txt=type.toLocaleLowerCase('pt-PT');
+  let distance=txt.includes('corrida')||txt.includes('caminhada')||txt.includes('bicicleta');
+  if(isGymType()&&selectedMuscles.length===0){alert('Escolhe pelo menos um grupo muscular treinado.');return}
+  let km=distance?Number($('traindistance').value):0;
+  let min=distance?0:Number($('trainduration').value);
+  if(distance&&(!km||km<=0)){alert('Indica a distância em km.');return}
+  if(!distance&&(!min||min<=0)){alert('Indica a duração do treino.');return}
+  edit(d=>d.workouts.push({type,min,km,muscles:isGymType()?[...selectedMuscles]:[]}));
+  selectedMuscles=[];document.querySelectorAll('[data-muscle]').forEach(b=>b.classList.remove('selected'));
+  $('traindistance').value='';$('trainduration').value='';renderGymFields();
+};
+function removeEntry(type,i){
+  const k=key(selectedDate);
+  const d=day(k);
+  if(!Array.isArray(d[type]) || i<0 || i>=d[type].length)return;
+  const entry=d[type][i];
+
+  if(type==='meals'){
+    if(entry.rewardUsed && Array.isArray(db._rewardsUsed)){
+      const target=k;
+      const idx=db._rewardsUsed.findIndex(r=>{
+        const rd=new Date(r.date);
+        return !isNaN(rd) && key(rd)===target;
+      });
+      if(idx>=0)db._rewardsUsed.splice(idx,1);
+    }
+    if(entry.restaurant)undoRestaurantVisit(entry.restaurant,selectedDate);
+  }
+
+  d[type].splice(i,1);
+  db[k]=d;
+  localStorage.setItem(storage,JSON.stringify(db));
+  render();
+}
+function dates(n,start=new Date()){return Array.from({length:n},(_,i)=>{let d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);return d})}
+function startWeek(d){let a=new Date(d.getFullYear(),d.getMonth(),d.getDate());a.setDate(a.getDate()-(a.getDay()+6)%7);return a}
+function fmt(d){return d.toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}
+function summary(ds){
+  let v=ds.map(d=>day(key(d)));
+  let water=v.reduce((s,d)=>s+(Number(d.water)||0),0);
+  let train=v.reduce((s,d)=>s+(d.workouts||[]).length,0);
+  let minutes=v.reduce((s,d)=>s+workoutMinutes(d),0);
+  let meals=v.reduce((s,d)=>s+(d.meals||[]).length,0);
+  let points=v.reduce((s,d)=>s+dailyPoints(d),0);
+  return {water,train,minutes,meals,xp:points};
+}
+
+function setRestaurantView(v){restaurantView=v;renderRestaurants()}
+function stars(n){n=Number(n)||0;return '★'.repeat(n)+'☆'.repeat(5-n)}
+function rateRestaurant(id,n){
+  let r=restaurants()[id];if(!r)return;
+  r.rating=Math.max(1,Math.min(5,Number(n)||0));
+  save();
+}
+function moveRestaurant(id,status){let r=restaurants()[id];if(r){r.status=status;save()}}
+function deleteRestaurant(id){
+  let r=restaurants()[id];if(!r)return;
+  if(confirm('Apagar '+r.name+' da lista de restaurantes?')){
+    delete db._restaurants[id];
+    localStorage.setItem(storage,JSON.stringify(db));
+    renderRestaurants();
+  }
+}
+function renderRestaurants(){
+  if(!$('restaurantList'))return;
+  let rs=restaurants(),all=Object.entries(rs),visited=all.filter(([id,r])=>r.status==='visited'),wish=all.filter(([id,r])=>r.status==='wishlist');
+  let ratings=visited.map(([id,r])=>Number(r.rating)||0).filter(Boolean);
+  $('visitedCount').textContent=visited.length;$('wishlistCount').textContent=wish.length;
+  $('restaurantAvg').textContent=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1):'—';
+  $('visitCount').textContent=visited.reduce((s,[id,r])=>s+(Array.isArray(r.visits)?r.visits.length:0),0);
+  $('visitedTab').classList.toggle('selected',restaurantView==='visited');$('wishlistTab').classList.toggle('selected',restaurantView==='wishlist');
+  let list=(restaurantView==='visited'?visited:wish).sort((a,b)=>{
+    if(restaurantView==='visited')return (Number(b[1].rating)||0)-(Number(a[1].rating)||0);
+    return a[1].name.localeCompare(b[1].name,'pt');
+  });
+  $('restaurantList').innerHTML=list.length?list.map(([id,r])=>{
+    let visits=Array.isArray(r.visits)?r.visits.length:0;
+    let last=visits?r.visits[r.visits.length-1].date:'';
+    return `<div class="restaurantCard">
+      <div class="row"><div><b>${escape(r.name)}</b>${restaurantView==='visited'?`<div class="muted">${visits} visita${visits===1?'':'s'}${last?' · última '+last:''}</div>`:''}</div><button class="danger" onclick="deleteRestaurant('${id.replace(/'/g,"\\'")}')">Apagar</button></div>
+      ${restaurantView==='visited'?`<div style="margin-top:10px"><div class="muted">Avaliação</div><div class="stars">${[1,2,3,4,5].map(n=>`<button type="button" class="secondary smallbutton" onclick="rateRestaurant('${id.replace(/'/g,"\\'")}',${n})">${n<=(Number(r.rating)||0)?'★':'☆'} ${n}</button>`).join('')}</div></div>`:''}
+      ${r.note?`<div class="muted" style="margin-top:7px">${escape(r.note)}</div>`:''}
+      <div class="restaurantMeta">
+        ${restaurantView==='wishlist'?`<button class="secondary smallbutton" onclick="moveRestaurant('${id.replace(/'/g,"\\'")}','visited')">✓ Marcar como visitado</button>`:`<span class="tag">⭐ ${r.rating||'sem avaliação'}</span>`}
+      </div>
+    </div>`
+  }).join(''):'<p class="muted">'+(restaurantView==='visited'?'Ainda não tens restaurantes visitados.':'Ainda não tens restaurantes na lista “Quero ir”.')+'</p>';
+}
+$('restaurantForm').onsubmit=e=>{
+  e.preventDefault();let name=$('restaurantName').value.trim(),id=restaurantId(name),rs=restaurants(),old=rs[id];
+  rs[id]={name,status:$('restaurantStatus').value,rating:old?.rating||0,note:$('restaurantNote').value.trim(),visits:old?.visits||[]};
+  localStorage.setItem(storage,JSON.stringify(db));$('restaurantName').value='';$('restaurantNote').value='';restaurantView=$('restaurantStatus').value;render();
+};
+
+
+
+function setSpending(v){edit(d=>d.spending=v)}
+function renderSpending(d){
+  if(!$('spendNone'))return;
+  ['none','necessary','little','much'].forEach(v=>{
+    let id={none:'spendNone',necessary:'spendNecessary',little:'spendLittle',much:'spendMuch'}[v];
+    $(id).classList.toggle('selected',d.spending===v);
+  });
+  let labels={none:'💚 Não gastaste nada · <b>+2 pontos</b>',necessary:'✓ Gastaste apenas o necessário · <b>0 pontos</b>',little:'🟡 Gastaste pouco · <b>−2 pontos</b>',much:'🔴 Gastaste muito · <b>−5 pontos</b>'};
+  $('spendingInfo').innerHTML=d.spending?labels[d.spending]:'Ainda não classificaste os gastos deste dia.';
+}
+
+function saveSleep(){
+  let input=$('sleepHours');
+  if(!input)return;
+  let raw=String(input.value).trim().replace(',','.');
+  let h=Number(raw);
+  if(raw===''||!Number.isFinite(h)||h<=0||h>24){
+    alert('Indica as horas dormidas entre 0 e 24. Ex.: 7.5');
+    return;
+  }
+  edit(d=>{d.sleep=h});
+}
+function renderSleep(d){
+  if(!$('sleepHours'))return;
+  let hasSleep=d.sleep!==undefined&&d.sleep!==null&&d.sleep!=='';
+  $('sleepHours').value=hasSleep?d.sleep:'';
+  let h=hasSleep?Number(d.sleep):0;
+  let p=hasSleep?sleepPoints(d):0;
+  $('sleepScoreInfo').innerHTML=!hasSleep
+    ?'Ainda sem registo · 7–8 h = +1 · menos de 7 h = −1 · mais de 8 h = 0'
+    :`✓ Guardado: <b>${h} h</b> · ${p>0?'+1 ponto':p<0?'−1 ponto':'0 pontos'}`;
+}
+function renderExerciseWeek(){
+  if(!$('weekGym'))return;
+  let ws=startWeek(selectedDate),s=weekExerciseStats(ws),p=exerciseWeekPoints(ws);
+  $('weekGym').textContent=s.gym+'/3';$('weekRun').textContent=s.run+'/3';$('weekTotal').textContent=s.total+'/6';let km=weekDistanceKm(ws);if($('weekKm'))$('weekKm').textContent=km.toFixed(1)+'/20 km';
+  let msg=s.gym>=3&&s.run>=3?'⭐ Semana perfeita: +10 pontos':
+          s.total>=6?'✓ 6 treinos completos: +7 pontos':
+          s.total===5?'5 treinos: +4 pontos':
+          s.total===4?'4 treinos: 0 pontos':
+          '3 ou menos: −5 pontos';
+  $('exerciseScoreInfo').innerHTML=msg+(km>=20?' · 🏃🚶 <b>+2 extra pelos 20 km</b>':'');
+}
+function renderPoints(){
+  if(!$('pointsTotal'))return;
+  let p=totalPoints();
+  let progress=Math.max(0,p)%75;
+  $('pointsTotal').textContent=p;
+  $('reward75Progress').textContent=progress+' / 75';
+  $('reward75Bar').style.width=(progress/75*100)+'%';
+}
+function render(){
+  updateDateSelector();
+  let d=day(key(selectedDate));
+  let total=totalPoints();
+  $('date').textContent=selectedDate.toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'});
+  if($('level'))$('level').textContent='Pontuação';
+  if($('xp'))$('xp').textContent=(Math.max(0,total)%75)+' / 75 pontos';
+  if($('xpbar'))$('xpbar').style.width=((Math.max(0,total)%75)/75*100)+'%';
+  if($('totalxp'))$('totalxp').textContent=total+' pontos acumulados';
+  if($('homewater'))$('homewater').textContent=((Number(d.water)||0)/1000).toFixed(1)+' L';
+  if($('hometrain'))$('hometrain').textContent=workoutMinutes(d)+' min';
+  if($('traincount'))$('traincount').textContent=(d.workouts||[]).length+' treinos';
+  if($('homemeals'))$('homemeals').textContent=(d.meals||[]).length;
+  if($('homexp'))$('homexp').textContent=dailyPoints(d);
+  if($('dailyPointsBreakdown')){
+    let hasWater=(Number(d.water)||0)>0;
+    let hasFood=Array.isArray(d.meals)&&d.meals.length>0;
+    let hasSweets=d.sweets===true||d.sweets===false;
+    let hasSleep=d.sleep!==undefined&&d.sleep!==null&&d.sleep!=='';
+    let hasSpending=!!d.spending;
+    let rows=[
+      ['💧 Água',hasWater?waterPoints(d):0,hasWater],
+      ['🍽️ Alimentação',hasFood?foodPoints(d):0,hasFood],
+      ['🍬 Doces',hasSweets?sweetsPoints(d):0,hasSweets],
+      ['😴 Sono',hasSleep?sleepPoints(d):0,hasSleep],
+      ['💸 Gastos',hasSpending?spendingPoints(d):0,hasSpending]
+    ];
+    $('dailyPointsBreakdown').innerHTML=rows.map(r=>`<div class="entry row"><span>${r[0]}${r[2]?'':' <span class="muted">· sem registo</span>'}</span><b style="color:${r[1]>0?'var(--green)':r[1]<0?'var(--red)':'var(--muted)'}">${r[1]>0?'+':''}${r[1]}</b></div>`).join('');
+    if($('dailyPointsTotal'))$('dailyPointsTotal').textContent=(dailyPoints(d)>0?'+':'')+dailyPoints(d)+' pontos';
+  }
+
+  if($('missions'))$('missions').innerHTML=[
+    ['💧 Beber 2,5 L de água',(Number(d.water)||0)>=goal],
+    ['🍽️ Registar uma refeição',(d.meals||[]).length>0],
+    ['🏋️ Registar um treino',(d.workouts||[]).length>0]
+  ].map(m=>`<div class="entry">${m[1]?'✅':'⬜'} ${m[0]}</div>`).join('');
+
+  let w=summary(dates(7,startWeek(selectedDate)));
+  if($('weekly'))$('weekly').innerHTML=`<div class="row"><span>🏋️ ${w.train} treinos</span><span>🍽️ ${w.meals} refeições</span></div><p class="muted">💧 ${(w.water/1000).toFixed(2)} L · 🏅 ${w.xp} pontos diários</p>`;
+
+  if($('foodlist'))$('foodlist').innerHTML=(d.meals||[]).length?d.meals.map((m,i)=>{
+    let mp=mealPoints(m);
+    let quality=isSmallMeal(m)?(mp===0?'✓ OK · 0':'🍩 Mau · −1'):
+      m.mode==='healthy'?'🥗 Saudável · +3':
+      m.mode==='balanced'?'⚖️ Equilibrada · +2':
+      (m.mode==='bad'||m.mode==='free')?(m.rewardUsed?'🍕 Má · 🎟️ prémio':'🍕 Má · sem prémio'):
+      '⚖️ Equilibrada · +2';
+    let place=m.place==='restaurant'?'🍴 '+escape(m.restaurant||'Restaurante'):m.place==='delivery'?'🛵 '+escape(m.restaurant||'Mandar vir'):'🏠 Casa';
+    return `<div class="entry row"><div><b>${escape(m.type)}</b><div class="muted">${quality}</div><div class="muted">${escape(m.desc||'')}</div><div class="muted">${place}</div></div><button class="danger" onclick="removeEntry('meals',${i})">Apagar</button></div>`;
+  }).join(''):'<p class="muted">Ainda sem refeições.</p>';
+
+  if($('trainlist'))$('trainlist').innerHTML=(d.workouts||[]).length?d.workouts.map((w,i)=>{
+    let detail=Number(w.km)>0?Number(w.km).toFixed(1)+' km':(Number(w.min)||0)+' min';
+    let muscles=Array.isArray(w.muscles)&&w.muscles.length?`<div class="muted">💪 ${w.muscles.map(escape).join(', ')}</div>`:'';
+    return `<div class="entry row"><div><b>${escape(w.type||'Treino')}</b><div class="muted">${detail}</div>${muscles}</div><button class="danger" onclick="removeEntry('workouts',${i})">Apagar</button></div>`;
+  }).join(''):'<p class="muted">Ainda sem treinos.</p>';
+
+  if($('wateramount'))$('wateramount').textContent=(Number(d.water)||0)+' / '+goal+' ml';
+  if($('waterbar'))$('waterbar').style.width=Math.min(100,(Number(d.water)||0)/goal*100)+'%';
+  if($('waterweek'))$('waterweek').innerHTML=dates(7,new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate()-6)).map(dt=>`<div class="entry row"><span>${fmt(dt)}</span><b>${Number(day(key(dt)).water)||0} ml</b></div>`).join('');
+
+  renderMealMode();renderMealPlace();renderSweets(d);renderSleep(d);renderSpending(d);
+  renderGymFields();renderExerciseWeek();renderPoints();renderRestaurants();renderRewards();renderHistory();
+}
+function renderRewards(){
+  let total=totalPoints(),points=rewardPoints(),available=availableRewards(),used=rewardUses(),progress=((points%75)+75)%75;
+  $('rewardcount').textContent=available;
+  $('rewardprogress').textContent=progress+' / 75 pontos';
+  $('rewardbar').style.width=(progress/75*100)+'%';
+  $('rewardmissing').textContent=progress===0&&total>0?'Próxima: 75 pontos':('Faltam '+(75-progress)+' pontos');
+  $('usereward').disabled=available<1;
+  $('usereward').textContent=available>0?'Usar refeição livre':'Ainda bloqueada';
+  $('usereward').style.opacity=available>0?'1':'.45';
+  $('rewardhero').classList.toggle('rewardReady',available>0);
+  $('rewardhistory').innerHTML=used.length?used.slice().reverse().map(r=>`<div class="entry rewardUsed"><b>🍔 ${escape(r.label)}</b><div class="muted">${new Date(r.date).toLocaleDateString('pt-PT',{day:'numeric',month:'long',year:'numeric'})} · utilizada</div></div>`).join(''):'<p class="muted">Ainda não utilizaste nenhuma recompensa.</p>';
+}
+function setPeriod(p){period=p;offset=0;renderHistory()}function movePeriod(n){offset+=n;renderHistory()}
+
+function setHistoryPeriod(p){period=p;offset=0;renderHistory()}
+function historyDates(){
+  let base=new Date(),start,count;
+  if(period==='day'){base.setDate(base.getDate()+offset);start=new Date(base.getFullYear(),base.getMonth(),base.getDate());count=1}
+  else if(period==='week'){start=startWeek(base);start.setDate(start.getDate()+offset*7);count=7}
+  else if(period==='month'){start=new Date(base.getFullYear(),base.getMonth()+offset,1);count=new Date(start.getFullYear(),start.getMonth()+1,0).getDate()}
+  else{start=new Date(base.getFullYear()+offset,0,1);count=((new Date(base.getFullYear()+offset,1,29)).getMonth()===1)?366:365}
+  return dates(count,start);
+}
+
+function renderHistory(){
+  document.querySelectorAll('[data-hperiod]').forEach(b=>b.classList.toggle('selected',b.dataset.hperiod===period));
+  let now=new Date(),start,ds;
+  if(period==='week'){
+    start=startWeek(new Date(now.getFullYear(),now.getMonth(),now.getDate()+offset*7));
+    ds=dates(7,start);
+    $('periodtitle').textContent=fmt(ds[0])+' – '+fmt(ds[6]);
+  }else{
+    start=new Date(now.getFullYear(),now.getMonth()+offset,1);
+    ds=dates(new Date(start.getFullYear(),start.getMonth()+1,0).getDate(),start);
+    $('periodtitle').textContent=start.toLocaleDateString('pt-PT',{month:'long',year:'numeric'});
+  }
+
+  if($('weekBtn')) $('weekBtn').classList.toggle('selected',period==='week');
+  if($('monthBtn')) $('monthBtn').classList.toggle('selected',period==='month');
+
+  let visible=ds.filter(dt=>key(dt)<=key());
+  let s=summary(visible);
+  let historyPoints=s.xp;
+  let historyWeeks=new Set(visible.map(dt=>key(startWeek(dt))));
+  historyWeeks.forEach(wk=>{
+    let ws=parseLocalDate(wk);
+    historyPoints+=countedExerciseWeekPoints(ws)+distanceWeekPoints(ws);
+  });
+  $('histpontos').textContent=historyPoints;
+  $('histTrain').textContent=s.train;
+  $('histMinutes').textContent=s.minutes;
+  let waterRegistered=visible.filter(dt=>(Number(day(key(dt)).water)||0)>0);
+  let waterTotal=waterRegistered.reduce((sum,dt)=>sum+(Number(day(key(dt)).water)||0),0);
+  $('histWater').textContent=(waterRegistered.length?waterTotal/waterRegistered.length/1000:0).toFixed(1)+' L';
+
+  let waterDays=visible.filter(dt=>day(key(dt)).water>=goal).length;
+  $('waterGoalDays').textContent=waterDays+' dias ✓';
+
+  let complete=visible.filter(dt=>{
+    let d=day(key(dt));
+    return d.water>=goal && d.meals.length>0 && d.workouts.length>0;
+  }).length;
+  let consistency=visible.length?Math.round(complete/visible.length*100):0;
+  $('consistencyText').textContent=consistency+'%';
+  $('consistencyRing').style.setProperty('--p',consistency+'%');
+
+  function label(dt,i){
+    if(period==='month'){
+      let step=Math.max(1,Math.ceil(ds.length/10));
+      return (i%step===0||i===visible.length-1)?String(dt.getDate()):'';
+    }
+    return dt.toLocaleDateString('pt-PT',{weekday:'short'}).replace('.','');
+  }
+
+  function bars(elId,values,type,formatter){
+    let max=Math.max(...values.map(v=>v.value),1);
+    $(elId).innerHTML=values.map((v,i)=>{
+      let h=v.value===0?3:Math.max(7,Math.round(v.value/max*100));
+      return `<div class="chartCol"><div class="chartValue">${formatter(v.value)}</div><div class="chartBarWrap"><div class="chartBar ${type}" style="height:${h}%"></div></div><div class="chartLabel">${label(v.date,i)}</div></div>`;
+    }).join('');
+  }
+
+  bars('xpChart',visible.map(dt=>({date:dt,value:xp(day(key(dt)))})),'',v=>v?v:'');
+  bars('waterChart',visible.map(dt=>({date:dt,value:day(key(dt)).water})),'water',v=>v?(v/1000).toFixed(1)+'L':'');
+  bars('trainChart',visible.map(dt=>({date:dt,value:day(key(dt)).workouts.reduce((a,w)=>a+(Number(w.min)||0),0)})),'train',v=>v?v:'');
+}
+function exportData(){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=url;a.download='life-game-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');document.querySelectorAll('nav button').forEach(n=>n.classList.toggle('active',n===b));render()});render();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service Worker:', err));
+  });
+}
+</script>
+
+</body></html>
