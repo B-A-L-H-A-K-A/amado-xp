@@ -1133,6 +1133,10 @@ function renderGymFields(){
   $('gymFields').classList.toggle('hidden',!gym);
   if($('distanceField'))$('distanceField').classList.toggle('hidden',!distance);
   if($('durationField'))$('durationField').classList.toggle('hidden',distance);
+  // Um campo required continua a bloquear o formulário mesmo quando está escondido.
+  // Distância é obrigatória para corrida/caminhada/bicicleta; duração para os restantes.
+  if($('traindistance'))$('traindistance').required=distance;
+  if($('trainduration'))$('trainduration').required=!distance;
   if(!gym){selectedMuscles=[];document.querySelectorAll('[data-muscle]').forEach(b=>b.classList.remove('selected'))}
 }
 function toggleMuscle(btn){
