@@ -518,8 +518,19 @@ html body .muscleGrid button[data-muscle].selected {
   color:#b8c0ba!important;
   font-weight:650!important;
 }
+
+<style id="v30-alcohol">
+.alcoholChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.alcoholChoices button{padding:11px 6px!important;font-size:12px!important}
+@media(max-width:380px){.alcoholChoices{grid-template-columns:1fr}}
 </style>
 
+</style>
+<style id="v31-teeth">
+.teethChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.teethChoices button{padding:11px 6px!important;font-size:12px!important}
+@media(max-width:380px){.teethChoices{grid-template-columns:1fr}}
+</style>
 
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#171a18">
@@ -531,7 +542,63 @@ html body .muscleGrid button[data-muscle].selected {
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
-</head><body><main>
+
+<style id="v29-iphone-bottom-controls">
+/* iPhone: data em baixo + navegação num menu compacto */
+body{padding-bottom:0}
+main{padding-bottom:190px!important}
+.daySelector{
+  position:fixed!important;top:auto!important;bottom:calc(72px + env(safe-area-inset-bottom))!important;
+  left:12px!important;right:12px!important;z-index:55!important;
+  margin:0!important;padding:7px 8px!important;border:1px solid var(--line)!important;
+  border-radius:16px!important;background:rgba(29,33,30,.96)!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.daySelectorInner{max-width:520px!important}
+.daySelectorInner button{min-height:38px!important}
+.daySelectorInner .datePick{font-size:14px!important}
+nav{
+  display:none!important;position:fixed!important;left:12px!important;right:12px!important;
+  bottom:calc(76px + env(safe-area-inset-bottom))!important;z-index:70!important;
+  padding:10px!important;border:1px solid var(--line)!important;border-radius:18px!important;
+  background:rgba(29,33,30,.98)!important;grid-template-columns:repeat(3,1fr)!important;
+  gap:7px!important;box-shadow:0 10px 35px rgba(0,0,0,.38)!important;
+}
+nav.open{display:grid!important}
+nav button{max-width:none!important;min-height:58px!important;padding:8px 5px!important;border-radius:12px!important;font-size:10px!important}
+nav button span{font-size:20px!important}
+#menuToggle{
+  position:fixed;z-index:80;left:50%;transform:translateX(-50%);
+  bottom:calc(12px + env(safe-area-inset-bottom));width:min(210px,calc(100% - 36px));
+  height:50px;border-radius:16px!important;background:#222723!important;color:#f1f3f1!important;
+  border:1px solid #414941!important;box-shadow:0 8px 28px rgba(0,0,0,.32)!important;
+}
+#menuBackdrop{display:none;position:fixed;inset:0;z-index:65;background:rgba(0,0,0,.42)}
+#menuBackdrop.open{display:block}
+@media(min-width:700px){.daySelector{left:50%!important;right:auto!important;width:540px!important;transform:translateX(-50%)}}
+</style>
+\n<style id="v30-annual-flame-dashboard">
+/* Início 2026+: chama anual + evolução física */
+body.home-active .daySelector{display:none!important}
+body.home-active main{padding-bottom:92px!important}
+.annualHero{position:relative;overflow:hidden;text-align:center;padding:24px 18px 20px;background:radial-gradient(circle at 50% 45%,rgba(255,132,44,.16),transparent 42%),var(--card);border:1px solid var(--line);border-radius:22px;margin:14px 0}
+.annualHero .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.flameWrap{height:190px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+#annualFlame{display:block;line-height:1;transform-origin:50% 100%;filter:drop-shadow(0 0 18px rgba(255,122,34,.35));transition:font-size .5s ease,filter .5s ease,transform .35s ease}
+.annualXP{font-size:40px;font-weight:900;letter-spacing:-1.5px;margin-top:4px}
+.annualPct{font-weight:800;margin:3px 0 12px}
+.annualTrack{height:10px;background:#2b302c;border-radius:999px;overflow:hidden;margin:0 auto 8px;max-width:430px}
+.annualTrack>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff9d36,#ff5b2e);border-radius:999px;transition:width .5s ease}
+.evolutionGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.evolutionStat{background:#242925;border:1px solid var(--line);border-radius:15px;padding:13px}
+.evolutionStat .value{font-size:23px;font-weight:900;margin-top:5px}
+.delta.good{color:var(--green)}.delta.neutral{color:var(--muted)}
+.measureForm{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.measureForm label{margin:0}.measureForm button{grid-column:1/-1}
+.yearArchive{margin-top:10px}.yearArchive .entry{align-items:flex-start}
+.mealFour{grid-template-columns:1fr 1fr!important}
+@media(max-width:420px){.annualXP{font-size:36px}.flameWrap{height:170px}.evolutionGrid{grid-template-columns:1fr 1fr}.measureForm{grid-template-columns:1fr 1fr}}
+</style>\n</head><body><main>
 <div class="daySelector">
   <div class="daySelectorInner">
     <button onclick="moveSelectedDay(-1)">‹</button>
@@ -541,28 +608,44 @@ html body .muscleGrid button[data-muscle].selected {
     <input id="datePicker" type="date">
   </div>
 </div>
-<section id="home"><div class="muted" id="date"></div>
+<section id="home">
 <div class="amadoBrand">
   <h1>AMADO XP</h1>
   <div class="amadoTagline">Level up your life.</div>
 </div>
-<h2 class="homeProgressTitle">O teu progresso</h2><span class="muted" id="totalxp"></span></div><div class="grid"><div class="card"><div class="muted">💧 Água no dia</div><div class="big" id="homewater">0 ml</div><div class="muted">Objetivo: 2500 ml</div></div><div class="card"><div class="muted">🏋️ Treino no dia</div><div class="big" id="hometrain">0 min</div><div class="muted" id="traincount">0 treinos</div></div><div class="card"><div class="muted">🍽️ Refeições</div><div class="big" id="homemeals">0</div><div class="muted">Registadas no dia</div></div><div class="card"><div class="muted">🏅 Pontos do dia</div><div class="big" id="homexp">0</div><div class="muted">Continua assim!</div></div></div>
-<div class="card">
-  <h2>🧮 Pontos de hoje</h2>
-  <div id="dailyPointsBreakdown"></div>
-  <div class="entry row" style="margin-top:10px"><b>Total do dia</b><b id="dailyPointsTotal">0 pontos</b></div>
-</div>
-<div class="card"><h2>🎯 Missões do dia</h2><div id="missions"></div></div><div class="card"><h2>📊 Esta semana</h2><div id="weekly"></div></div>
-<div class="card">
-  <h2>🏅 Pontos</h2>
-  <div class="row"><div><div class="muted">Total acumulado</div><div class="big" id="pointsTotal">0</div></div><div style="text-align:right"><div class="muted">Próximo prémio</div><b id="reward75Progress">0 / 75</b></div></div>
-  <div class="progress"><i id="reward75Bar"></i></div>
-  <p class="muted">Cada 75 pontos desbloqueia 🎟️ 1 refeição livre.</p>
+<div class="annualHero">
+  <div class="eyebrow">🔥 CHAMA ANUAL · <span id="annualYear">2026</span></div>
+  <div class="flameWrap"><span id="annualFlame">🔥</span></div>
+  <div class="annualXP"><span id="annualXP">0</span> XP</div>
+  <div class="annualPct" id="annualPct">0% do máximo anual</div>
+  <div class="annualTrack"><i id="annualBar"></i></div>
+  <div class="muted" id="annualMaxLabel">Máximo anual: — XP</div>
 </div>
 
+<div class="card">
+  <div class="row"><div><div class="muted">EVOLUÇÃO</div><h2 style="margin:3px 0 0">Dia 0 → Agora</h2></div><span class="pill" id="checkpointLabel">Dia 0</span></div>
+  <div class="evolutionGrid">
+    <div class="evolutionStat"><div class="muted">⚖️ Peso</div><div class="value" id="homeWeight">—</div><div class="muted delta neutral" id="weightDelta">Define o Dia 0</div></div>
+    <div class="evolutionStat"><div class="muted">📏 Cintura</div><div class="value" id="homeWaist">—</div><div class="muted delta neutral" id="waistDelta">Define o Dia 0</div></div>
+  </div>
+  <div class="measureForm">
+    <label>Peso (kg)<input id="measureWeight" type="number" inputmode="decimal" step="0.1" min="20" max="400" placeholder="Ex.: 82,5"></label>
+    <label>Cintura (cm)<input id="measureWaist" type="number" inputmode="decimal" step="0.1" min="30" max="300" placeholder="Ex.: 91"></label>
+    <button type="button" id="saveMeasureBtn" onclick="saveAnnualMeasure()">Definir Dia 0</button>
+  </div>
+  <p class="muted" id="measureHint">O primeiro registo fica guardado como Dia 0. Depois podes registar a evolução ao longo do ano.</p>
+</div>
 
+<div class="card">
+  <div class="row"><div><div class="muted">HOJE</div><h2 style="margin:3px 0 0">Resumo rápido</h2></div><div class="big" id="homexp">0</div></div>
+  <div class="grid" style="margin-top:10px"><div class="evolutionStat"><div class="muted">💧 Água</div><div class="value" id="homewater">0 L</div></div><div class="evolutionStat"><div class="muted">🏋️ Treino</div><div class="value" id="hometrain">0 min</div></div></div>
+  <p class="muted" style="margin-bottom:0">Usa o botão <b>☰ Menu</b> para registar refeições, treino, água, sono e os restantes tópicos.</p>
+</div>
 
-<div class="card"><h2>ℹ️ Como funcionam os pontos</h2><p class="muted">Os pontos vêm dos teus registos diários e dos bónus semanais. Cada <b>75 pontos</b> desbloqueia 🎟️ 1 refeição livre.</p></div><div class="card"><div class="row"><b id="level">Nível 1</b><span class="pill" id="xp">0 / 75 pontos</span></div><div class="bar"><div id="xpbar"></div></div>
+<div class="card">
+  <div class="row"><h2 style="margin:0">📅 Anos anteriores</h2><span class="muted">Histórico anual</span></div>
+  <div id="annualHistory" class="yearArchive"><p class="muted">O primeiro ano ficará aqui quando começares um novo ano.</p></div>
+</div>
 </section>
 <section id="food" class="hidden"><div class="muted">REGISTOS</div><h1>🍽️ Alimentação</h1></div><div class="card"><h2>Adicionar refeição</h2><form id="foodform"><label>Tipo de refeição<select id="mealtype" onchange="renderMealMode()">
 <option value="Pequeno-almoço">☕ Pequeno-almoço</option>
@@ -581,10 +664,11 @@ html body .muscleGrid button[data-muscle].selected {
 </div>
 <div id="normalMealChoices">
 <label>Qualidade da refeição</label>
-<div class="placeMode">
+<div class="placeMode mealFour">
   <button type="button" id="healthyMealBtn" class="selected" onclick="setMealMode('healthy')">🥗 Saudável · +3</button>
   <button type="button" id="balancedMealBtn" onclick="setMealMode('balanced')">⚖️ Equilibrada · +2</button>
-  <button type="button" id="badMealBtn" onclick="setMealMode('bad')">🍕 Má · 0</button>
+  <button type="button" id="normalMealBtn" onclick="setMealMode('normal')">🍽️ Normal · 0</button>
+  <button type="button" id="badMealBtn" onclick="setMealMode('bad')">🍕 Má · −2</button>
 </div>
 <div id="mealRewardInfo" class="notice good">
   🥗 <b>Saudável:</b> refeição nutritiva e alinhada com o objetivo. Vale +3 pontos.
@@ -608,13 +692,39 @@ html body .muscleGrid button[data-muscle].selected {
   </div>
 </div>
 
+<div class="card">
+  <h2>🍷 Álcool no dia</h2>
+  <p class="muted">Regista o consumo de álcool deste dia.</p>
+  <div class="alcoholChoices">
+    <button id="alcoholNoneBtn" type="button" onclick="setAlcohol('none')">✓ Nada · 0</button>
+    <button id="alcoholLittleBtn" type="button" onclick="setAlcohol('little')">🍷 Pouco · −3</button>
+    <button id="alcoholExcessBtn" type="button" onclick="setAlcohol('excess')">🍷 Excesso · −5</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🦷 Dentes no dia</h2>
+  <p class="muted">Quantas vezes lavaste os dentes neste dia?</p>
+  <div class="teethChoices">
+    <button id="teethOneBtn" type="button" onclick="setTeeth(1)">🦷 1 vez · −1</button>
+    <button id="teethTwoBtn" type="button" onclick="setTeeth(2)">🦷 2 vezes · +1</button>
+    <button id="teethThreeBtn" type="button" onclick="setTeeth(3)">🦷 3 vezes · +2</button>
+  </div>
+</div>
+
 <div class="card"><h2>ℹ️ Pontos das refeições</h2><div class="scoreLegend">
 <div class="scoreRule"><span>Almoço/Jantar saudável</span><b>+3</b></div>
 <div class="scoreRule"><span>Almoço/Jantar equilibrado</span><b>+2</b></div>
 <div class="scoreRule"><span>Almoço/Jantar mau/livre</span><b>0</b></div>
 <div class="scoreRule"><span>Pequeno-almoço, lanches e ceia OK</span><b>0</b></div>
 <div class="scoreRule"><span>Pequeno-almoço, lanches e ceia maus</span><b>−1</b></div>
-<div class="scoreRule"><span>Comeu doces no dia</span><b>−3</b></div></div>
+<div class="scoreRule"><span>Comeu doces no dia</span><b>−3</b></div>
+<div class="scoreRule"><span>Álcool: nada</span><b>0</b></div>
+<div class="scoreRule"><span>Álcool: pouco</span><b>−3</b></div>
+<div class="scoreRule"><span>Álcool: excesso</span><b>−5</b></div>
+<div class="scoreRule"><span>Dentes: 1 vez</span><b>−1</b></div>
+<div class="scoreRule"><span>Dentes: 2 vezes</span><b>+1</b></div>
+<div class="scoreRule"><span>Dentes: 3 vezes</span><b>+2</b></div></div>
 </section>
 <section id="exercise" class="hidden"><div class="muted">REGISTOS</div><h1>🏋️ Exercício</h1></div><div class="card"><h2>Adicionar treino</h2><form id="trainform">
 <label>Exercício
@@ -795,19 +905,19 @@ html body .muscleGrid button[data-muscle].selected {
   <div id="rewardhistory"></div>
 </div>
 
-<div class="card"><h2>ℹ️ Pontos e prémios</h2><p class="muted">Cada <b>75 pontos</b> acumulados desbloqueia 🎟️ 1 refeição livre. Os prémios podem acumular e são usados nas refeições más/livres.</p></div>
+<div class="card"><h2>ℹ️ Pontos e prémios</h2><p class="muted">Cada <b>60 pontos</b> acumulados desbloqueia 🎟️ 1 refeição livre. Os prémios podem acumular e são usados nas refeições más/livres.</p></div>
 <div class="card rewardHero" id="rewardhero">
   <div class="rewardIcon">🍕</div>
   <div class="muted">REFEIÇÕES LIVRES DISPONÍVEIS</div>
   <div class="rewardCount" id="rewardcount">0</div>
-  <p class="muted">Cada 75 pontos desbloqueia uma refeição livre.</p>
+  <p class="muted">Cada 60 pontos desbloqueia uma refeição livre.</p>
   <button id="usereward" onclick="useReward()">Usar refeição livre</button>
 </div>
 <div class="card">
   <h2>Próxima recompensa</h2>
-  <div class="row"><b id="rewardprogress">0 / 75 pontos</b><span class="pill" id="rewardmissing">Faltam 75 pontos</span></div>
+  <div class="row"><b id="rewardprogress">0 / 60 pontos</b><span class="pill" id="rewardmissing">Faltam 60 pontos</span></div>
   <div class="bar"><div id="rewardbar"></div></div>
-</section></main><nav><button data-tab="home" class="active"><span>🏠</span>Início</button><button data-tab="food"><span>🍽️</span>Comida</button><button data-tab="exercise"><span>🏋️</span>Treino</button><button data-tab="water"><span>💧</span>Água</button><button data-tab="sleep"><span>😴</span>Sono</button><button data-tab="spending"><span>💸</span>Gastos</button><button data-tab="restaurants"><span>🍴</span>Restaurantes</button><button data-tab="rewards"><span>🎁</span>Prémios</button><button data-tab="history"><span>📊</span>Histórico</button></nav><script>
+</section></main><div id="menuBackdrop" onclick="closeMenu()"></div><button id="menuToggle" type="button" onclick="toggleMenu()">☰ Menu · <span id="menuCurrent">Início</span></button><nav id="appNav"><button data-tab="home" class="active"><span>🏠</span>Início</button><button data-tab="food"><span>🍽️</span>Comida</button><button data-tab="exercise"><span>🏋️</span>Treino</button><button data-tab="water"><span>💧</span>Água</button><button data-tab="sleep"><span>😴</span>Sono</button><button data-tab="spending"><span>💸</span>Gastos</button><button data-tab="restaurants"><span>🍴</span>Restaurantes</button><button data-tab="rewards"><span>🎁</span>Prémios</button><button data-tab="history"><span>📊</span>Histórico</button></nav><script>
 const $=id=>document.getElementById(id),storage='amadoXPFinalV1',goal=2500;
 let db={};try{db=JSON.parse(localStorage.getItem(storage))||{}}catch{}
 let period='week',offset=0,selectedDate=new Date(),mealMode='healthy',smallMealMode='ok',mealPlace='home',restaurantView='visited';
@@ -835,11 +945,15 @@ function waterPoints(d){
 function mealPoints(m){
   let bp=smallMealPoints(m);if(bp!==null)return bp;
   if(m?.mode==='healthy')return 3;
-  if(m?.mode==='balanced'||m?.mode==='normal'||!m?.mode)return 2;
+  if(m?.mode==='balanced'||!m?.mode)return 2;
+  if(m?.mode==='normal')return 0;
+  if(m?.mode==='bad'||m?.mode==='free')return m?.rewardUsed?0:-2;
   return 0;
 }
 function foodPoints(d){return Array.isArray(d?.meals)?d.meals.reduce((s,m)=>s+mealPoints(m),0):0}
 function sweetsPoints(d){return d?.sweets===true?-3:0}
+function alcoholPoints(d){return d?.alcohol==='excess'?-5:d?.alcohol==='little'?-3:0}
+function teethPoints(d){return Number(d?.teeth)===3?2:Number(d?.teeth)===2?1:Number(d?.teeth)===1?-1:0}
 
 
 function spendingPoints(d){
@@ -866,7 +980,7 @@ function weekDistanceKm(start){
   return total;
 }
 function distanceWeekPoints(start){return weekDistanceKm(start)>=20?2:0}
-function dailyPoints(d){return waterPoints(d)+foodPoints(d)+sweetsPoints(d)+sleepPoints(d)+spendingPoints(d)}
+function dailyPoints(d){return waterPoints(d)+foodPoints(d)+sweetsPoints(d)+alcoholPoints(d)+teethPoints(d)+sleepPoints(d)+spendingPoints(d)}
 function weekExerciseStats(start){
   let ds=dates(7,start),gym=0,run=0,total=0;
   ds.forEach(dt=>(day(key(dt)).workouts||[]).forEach(w=>{
@@ -900,16 +1014,62 @@ function allWeekStarts(){
   allDateKeys().forEach(k=>seen.add(key(startWeek(parseLocalDate(k)))));
   return [...seen].sort();
 }
-function totalPoints(){
-  let daily=allDateKeys().reduce((s,k)=>s+dailyPoints(day(k)),0);
-  let weekly=allWeekStarts().reduce((s,k)=>s+countedExerciseWeekPoints(parseLocalDate(k))+distanceWeekPoints(parseLocalDate(k)),0);
+function totalPoints(year=new Date().getFullYear()){
+  year=Number(year);
+  let daily=allDateKeys().filter(k=>Number(k.slice(0,4))===year).reduce((s,k)=>s+dailyPoints(day(k)),0);
+  let weekly=allWeekStarts().filter(k=>{let st=parseLocalDate(k),end=new Date(st.getFullYear(),st.getMonth(),st.getDate()+6);return end.getFullYear()===year}).reduce((s,k)=>s+countedExerciseWeekPoints(parseLocalDate(k))+distanceWeekPoints(parseLocalDate(k)),0);
   return daily+weekly;
 }
+function annualMax(year=new Date().getFullYear()){
+  let days=((new Date(year,1,29)).getMonth()===1)?366:365;
+  return days*14+52*12;
+}
+function annualFlameTarget(year=new Date().getFullYear()){
+  return Math.round(annualMax(year)*0.75);
+}
+function annualData(year=new Date().getFullYear()){
+  if(!db._annual||typeof db._annual!=='object'||Array.isArray(db._annual))db._annual={};
+  if(!db._annual[year])db._annual[year]={start:null,measurements:[]};
+  if(!Array.isArray(db._annual[year].measurements))db._annual[year].measurements=[];
+  return db._annual[year];
+}
+function numInput(id){let raw=String($(id)?.value||'').trim().replace(',','.');let n=Number(raw);return Number.isFinite(n)?n:null}
+function measurementLabel(year,dateStr){
+  let start=annualData(year).start;if(!start)return 'Dia 0';
+  let a=parseLocalDate(start.date),b=parseLocalDate(dateStr),months=(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth();
+  if(months>=11)return 'Final';if(months>=9)return '9 meses';if(months>=6)return '6 meses';if(months>=3)return '3 meses';return 'Atualização';
+}
+function saveAnnualMeasure(){
+  let year=new Date().getFullYear(),a=annualData(year),weight=numInput('measureWeight'),waist=numInput('measureWaist');
+  if(weight===null&&waist===null){alert('Indica o peso e/ou a cintura.');return}
+  let rec={date:key(new Date()),weight,waist};
+  if(!a.start){a.start=rec}else{rec.label=measurementLabel(year,rec.date);a.measurements.push(rec)}
+  save();
+}
+function latestMeasure(a){return a.measurements.length?a.measurements[a.measurements.length-1]:a.start}
+function fmtDelta(v,unit){if(v===null||!Number.isFinite(v))return '—';let sign=v>0?'+':'';return sign+v.toFixed(1).replace('.',',')+' '+unit}
+function renderAnnualDashboard(){
+  if(!$('annualXP'))return;
+  let year=new Date().getFullYear(),xp=totalPoints(year),max=annualMax(year),target=annualFlameTarget(year),pct=Math.max(0,Math.min(100,xp/target*100)),a=annualData(year),latest=latestMeasure(a);
+  $('annualYear').textContent=year;$('annualXP').textContent=xp;$('annualPct').textContent=pct.toFixed(1).replace('.',',')+'% da meta da chama';$('annualBar').style.width=pct+'%';$('annualMaxLabel').textContent='Meta da chama: '+target+' XP · 75% do máximo teórico ('+max+' XP)';
+  let size=54+(pct/100)*104;$('annualFlame').style.fontSize=size+'px';$('annualFlame').style.filter='drop-shadow(0 0 '+(16+pct*.28)+'px rgba(255,122,34,'+(0.32+pct*.004)+'))';
+  if(!a.start){$('homeWeight').textContent='—';$('homeWaist').textContent='—';$('weightDelta').textContent='Define o Dia 0';$('waistDelta').textContent='Define o Dia 0';$('checkpointLabel').textContent='Dia 0';$('saveMeasureBtn').textContent='Definir Dia 0';$('measureHint').textContent='O primeiro registo fica guardado como Dia 0. Depois podes registar a evolução ao longo do ano.'}
+  else{
+    $('homeWeight').textContent=latest?.weight!=null?String(latest.weight).replace('.',',')+' kg':'—';$('homeWaist').textContent=latest?.waist!=null?String(latest.waist).replace('.',',')+' cm':'—';
+    let dw=(latest?.weight!=null&&a.start.weight!=null)?latest.weight-a.start.weight:null,dwa=(latest?.waist!=null&&a.start.waist!=null)?latest.waist-a.start.waist:null;
+    $('weightDelta').textContent=(dw===null?'Dia 0: —':'Dia 0: '+String(a.start.weight).replace('.',',')+' kg · '+fmtDelta(dw,'kg'));$('waistDelta').textContent=(dwa===null?'Dia 0: —':'Dia 0: '+String(a.start.waist).replace('.',',')+' cm · '+fmtDelta(dwa,'cm'));
+    $('checkpointLabel').textContent=measurementLabel(year,key(new Date()));$('saveMeasureBtn').textContent='Guardar medição';$('measureHint').textContent='Checkpoints sugeridos: 3, 6 e 9 meses e resultado final. Podes também registar medições intermédias.';
+  }
+  $('measureWeight').value='';$('measureWaist').value='';
+  let years=new Set(allDateKeys().map(k=>Number(k.slice(0,4))));Object.keys(db._annual||{}).forEach(y=>years.add(Number(y)));years.delete(year);
+  let ys=[...years].filter(Number.isFinite).sort((a,b)=>b-a);
+  $('annualHistory').innerHTML=ys.length?ys.map(y=>{let aa=annualData(y),last=latestMeasure(aa),p=totalPoints(y),mx=annualMax(y),target=annualFlameTarget(y),pc=Math.max(0,Math.min(100,p/target*100));let w=(aa.start?.weight!=null&&last?.weight!=null)?fmtDelta(last.weight-aa.start.weight,'kg'):'—';return `<div class="entry row"><div><b>🔥 ${y}</b><div class="muted">${p} XP · ${pc.toFixed(0)}% da chama</div></div><div style="text-align:right"><b>${w}</b><div class="muted">peso</div></div></div>`}).join(''):'<p class="muted">O primeiro ano ficará aqui quando começares um novo ano.</p>';
+}
 
-function rewardUses(){return Array.isArray(db._rewardsUsed)?db._rewardsUsed:[]}
+function rewardUses(year=new Date().getFullYear()){return (Array.isArray(db._rewardsUsed)?db._rewardsUsed:[]).filter(r=>{let d=new Date(r.date);return !Number.isNaN(d.getTime())&&d.getFullYear()===Number(year)})}
 function rewardPenalty(){return 0}
 function rewardPoints(){return Math.max(0,totalPoints())}
-function earnedRewards(){return Math.floor(rewardPoints()/75)}
+function earnedRewards(){return Math.floor(rewardPoints()/60)}
 function availableRewards(){return Math.max(0,earnedRewards()-rewardUses().length)}
 function useReward(){
   if(availableRewards()<1)return;
@@ -991,13 +1151,15 @@ function renderMealMode(){
   $('smallMealBadBtn').classList.toggle('selected',smallMealMode==='bad');
   $('healthyMealBtn').classList.toggle('selected',mealMode==='healthy');
   $('balancedMealBtn').classList.toggle('selected',mealMode==='balanced');
+  $('normalMealBtn').classList.toggle('selected',mealMode==='normal');
   $('badMealBtn').classList.toggle('selected',mealMode==='bad');
   if(small)return;
   let info=$('mealRewardInfo');
   if(mealMode==='healthy'){info.className='notice good';info.innerHTML='🥗 <b>Saudável:</b> +3 pontos.'}
   else if(mealMode==='balanced'){info.className='notice';info.innerHTML='⚖️ <b>Equilibrada:</b> +2 pontos.'}
-  else if(availableRewards()>0){info.className='notice good';info.innerHTML='🍕 <b>Má/livre:</b> 0 pontos. Será usado 1 prémio.'}
-  else{info.className='notice warn';info.innerHTML='🍕 <b>Má/livre:</b> 0 pontos e fica registada sem prémio.'}
+  else if(mealMode==='normal'){info.className='notice';info.innerHTML='🍽️ <b>Normal:</b> 0 pontos.'}
+  else if(availableRewards()>0){info.className='notice good';info.innerHTML='🍕 <b>Má/livre:</b> −2 pontos, ou 0 se usares 1 prémio disponível.'}
+  else{info.className='notice warn';info.innerHTML='🍕 <b>Má:</b> −2 pontos.'}
 }
 function setSweets(v){
   let k=key(selectedDate);db[k]=day(k);db[k].sweets=!!v;save();
@@ -1006,6 +1168,24 @@ function renderSweets(d){
   if(!$('noSweetsBtn'))return;
   $('noSweetsBtn').classList.toggle('selected',d.sweets!==true);
   $('yesSweetsBtn').classList.toggle('selected',d.sweets===true);
+}
+function setAlcohol(v){
+  let k=key(selectedDate);db[k]=day(k);db[k].alcohol=v;save();
+}
+function renderAlcohol(d){
+  if(!$('alcoholNoneBtn'))return;
+  $('alcoholNoneBtn').classList.toggle('selected',d.alcohol==='none');
+  $('alcoholLittleBtn').classList.toggle('selected',d.alcohol==='little');
+  $('alcoholExcessBtn').classList.toggle('selected',d.alcohol==='excess');
+}
+function setTeeth(v){
+  let k=key(selectedDate);db[k]=day(k);db[k].teeth=Number(v);save();
+}
+function renderTeeth(d){
+  if(!$('teethOneBtn'))return;
+  $('teethOneBtn').classList.toggle('selected',Number(d.teeth)===1);
+  $('teethTwoBtn').classList.toggle('selected',Number(d.teeth)===2);
+  $('teethThreeBtn').classList.toggle('selected',Number(d.teeth)===3);
 }
 function addWater(n){edit(d=>d.water=Math.max(0,d.water+n))}
 $('foodform').onsubmit=e=>{
@@ -1170,36 +1350,42 @@ function renderExerciseWeek(){
 }
 function renderPoints(){
   if(!$('pointsTotal'))return;
-  let p=totalPoints();
-  let progress=Math.max(0,p)%75;
+  let p=totalPoints(new Date().getFullYear());
+  let progress=Math.max(0,p)%60;
   $('pointsTotal').textContent=p;
-  $('reward75Progress').textContent=progress+' / 75';
-  $('reward75Bar').style.width=(progress/75*100)+'%';
+  $('reward75Progress').textContent=progress+' / 60';
+  $('reward75Bar').style.width=(progress/60*100)+'%';
 }
 function render(){
   updateDateSelector();
   let d=day(key(selectedDate));
-  let total=totalPoints();
-  $('date').textContent=selectedDate.toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'});
+  let homeDay=day(key(new Date()));
+  let total=totalPoints(new Date().getFullYear());
+  if($('date'))$('date').textContent=selectedDate.toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'});
   if($('level'))$('level').textContent='Pontuação';
-  if($('xp'))$('xp').textContent=(Math.max(0,total)%75)+' / 75 pontos';
-  if($('xpbar'))$('xpbar').style.width=((Math.max(0,total)%75)/75*100)+'%';
+  if($('xp'))$('xp').textContent=(Math.max(0,total)%60)+' / 60 pontos';
+  if($('xpbar'))$('xpbar').style.width=((Math.max(0,total)%60)/60*100)+'%';
   if($('totalxp'))$('totalxp').textContent=total+' pontos acumulados';
-  if($('homewater'))$('homewater').textContent=((Number(d.water)||0)/1000).toFixed(1)+' L';
-  if($('hometrain'))$('hometrain').textContent=workoutMinutes(d)+' min';
-  if($('traincount'))$('traincount').textContent=(d.workouts||[]).length+' treinos';
-  if($('homemeals'))$('homemeals').textContent=(d.meals||[]).length;
-  if($('homexp'))$('homexp').textContent=dailyPoints(d);
+  if($('homewater'))$('homewater').textContent=((Number(homeDay.water)||0)/1000).toFixed(1)+' L';
+  if($('hometrain'))$('hometrain').textContent=workoutMinutes(homeDay)+' min';
+  if($('traincount'))$('traincount').textContent=(homeDay.workouts||[]).length+' treinos';
+  if($('homemeals'))$('homemeals').textContent=(homeDay.meals||[]).length;
+  if($('homexp'))$('homexp').textContent=(dailyPoints(homeDay)>0?'+':'')+dailyPoints(homeDay)+' XP';
+  renderAnnualDashboard();
   if($('dailyPointsBreakdown')){
     let hasWater=(Number(d.water)||0)>0;
     let hasFood=Array.isArray(d.meals)&&d.meals.length>0;
     let hasSweets=d.sweets===true||d.sweets===false;
+    let hasAlcohol=['none','little','excess'].includes(d.alcohol);
+    let hasTeeth=[1,2,3].includes(Number(d.teeth));
     let hasSleep=d.sleep!==undefined&&d.sleep!==null&&d.sleep!=='';
     let hasSpending=!!d.spending;
     let rows=[
       ['💧 Água',hasWater?waterPoints(d):0,hasWater],
       ['🍽️ Alimentação',hasFood?foodPoints(d):0,hasFood],
       ['🍬 Doces',hasSweets?sweetsPoints(d):0,hasSweets],
+      ['🍷 Álcool',hasAlcohol?alcoholPoints(d):0,hasAlcohol],
+      ['🦷 Dentes',hasTeeth?teethPoints(d):0,hasTeeth],
       ['😴 Sono',hasSleep?sleepPoints(d):0,hasSleep],
       ['💸 Gastos',hasSpending?spendingPoints(d):0,hasSpending]
     ];
@@ -1221,7 +1407,8 @@ function render(){
     let quality=isSmallMeal(m)?(mp===0?'✓ OK · 0':'🍩 Mau · −1'):
       m.mode==='healthy'?'🥗 Saudável · +3':
       m.mode==='balanced'?'⚖️ Equilibrada · +2':
-      (m.mode==='bad'||m.mode==='free')?(m.rewardUsed?'🍕 Má · 🎟️ prémio':'🍕 Má · sem prémio'):
+      m.mode==='normal'?'🍽️ Normal · 0':
+      (m.mode==='bad'||m.mode==='free')?(m.rewardUsed?'🍕 Má · 🎟️ prémio · 0':'🍕 Má · −2'):
       '⚖️ Equilibrada · +2';
     let place=m.place==='restaurant'?'🍴 '+escape(m.restaurant||'Restaurante'):m.place==='delivery'?'🛵 '+escape(m.restaurant||'Mandar vir'):'🏠 Casa';
     return `<div class="entry row"><div><b>${escape(m.type)}</b><div class="muted">${quality}</div><div class="muted">${escape(m.desc||'')}</div><div class="muted">${place}</div></div><button class="danger" onclick="removeEntry('meals',${i})">Apagar</button></div>`;
@@ -1237,15 +1424,15 @@ function render(){
   if($('waterbar'))$('waterbar').style.width=Math.min(100,(Number(d.water)||0)/goal*100)+'%';
   if($('waterweek'))$('waterweek').innerHTML=dates(7,new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate()-6)).map(dt=>`<div class="entry row"><span>${fmt(dt)}</span><b>${Number(day(key(dt)).water)||0} ml</b></div>`).join('');
 
-  renderMealMode();renderMealPlace();renderSweets(d);renderSleep(d);renderSpending(d);
+  renderMealMode();renderMealPlace();renderSweets(d);renderAlcohol(d);renderTeeth(d);renderSleep(d);renderSpending(d);
   renderGymFields();renderExerciseWeek();renderPoints();renderRestaurants();renderRewards();renderHistory();
 }
 function renderRewards(){
-  let total=totalPoints(),points=rewardPoints(),available=availableRewards(),used=rewardUses(),progress=((points%75)+75)%75;
+  let total=totalPoints(),points=rewardPoints(),available=availableRewards(),used=rewardUses(),progress=((points%60)+60)%60;
   $('rewardcount').textContent=available;
-  $('rewardprogress').textContent=progress+' / 75 pontos';
-  $('rewardbar').style.width=(progress/75*100)+'%';
-  $('rewardmissing').textContent=progress===0&&total>0?'Próxima: 75 pontos':('Faltam '+(75-progress)+' pontos');
+  $('rewardprogress').textContent=progress+' / 60 pontos';
+  $('rewardbar').style.width=(progress/60*100)+'%';
+  $('rewardmissing').textContent=progress===0&&total>0?'Próxima: 60 pontos':('Faltam '+(60-progress)+' pontos');
   $('usereward').disabled=available<1;
   $('usereward').textContent=available>0?'Usar refeição livre':'Ainda bloqueada';
   $('usereward').style.opacity=available>0?'1':'.45';
@@ -1327,7 +1514,10 @@ function renderHistory(){
   bars('trainChart',visible.map(dt=>({date:dt,value:day(key(dt)).workouts.reduce((a,w)=>a+(Number(w.min)||0),0)})),'train',v=>v?v:'');
 }
 function exportData(){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=url;a.download='life-game-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');document.querySelectorAll('nav button').forEach(n=>n.classList.toggle('active',n===b));render()});render();
+function toggleMenu(){let n=$('appNav'),o=!n.classList.contains('open');n.classList.toggle('open',o);$('menuBackdrop').classList.toggle('open',o);}
+function closeMenu(){$('appNav').classList.remove('open');$('menuBackdrop').classList.remove('open');}
+const tabNames={home:'Início',food:'Comida',exercise:'Treino',water:'Água',sleep:'Sono',spending:'Gastos',restaurants:'Restaurantes',rewards:'Prémios',history:'Histórico'};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');document.querySelectorAll('nav button').forEach(n=>n.classList.toggle('active',n===b));$('menuCurrent').textContent=tabNames[b.dataset.tab]||'Menu';document.body.classList.toggle('home-active',b.dataset.tab==='home');closeMenu();window.scrollTo({top:0,behavior:'smooth'});render()});document.body.classList.add('home-active');render();
 </script>
 <script>
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
