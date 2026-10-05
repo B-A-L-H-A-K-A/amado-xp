@@ -1469,9 +1469,17 @@ function levelUpForDate(dt=new Date()){
   return LEVEL_UPS[n%LEVEL_UPS.length];
 }
 function answerLevelUp(i){
-  let d=day(key(new Date())),lu=levelUpForDate(new Date()),correct=Number(i)===lu.a;
-  if(!d.levelUpDone){d.levelUpDone=true;d.levelUpChoice=Number(i);save()}else{d.levelUpChoice=Number(i)}
-  renderLevelUp();render();
+  let today=new Date(),k=key(today),d=day(k),lu=levelUpForDate(today);
+  // day() pode devolver um objeto novo quando ainda não existe registo para hoje.
+  // Guardá-lo explicitamente em db garante que o +1 XP fica persistido.
+  db[k]=d;
+  if(!d.levelUpDone){
+    d.levelUpDone=true;
+    d.levelUpChoice=Number(i);
+  }else{
+    d.levelUpChoice=Number(i);
+  }
+  save();
 }
 function renderLevelUp(){
   if(!$('levelUpQuestion'))return;let today=new Date(),d=day(key(today)),lu=levelUpForDate(today);
