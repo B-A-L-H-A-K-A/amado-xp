@@ -822,7 +822,6 @@ body.home-active main{padding-bottom:92px!important}
 </div>
 <div class="card">
   <div class="row"><button class="secondary smallbutton" onclick="movePeriod(-1)">‹</button><b id="periodtitle"></b><button class="secondary smallbutton" onclick="movePeriod(1)">›</button></div>
-  <div class="periodTabs"><button id="weekBtn" class="secondary smallbutton selected" onclick="setPeriod('week')">Semana</button><button id="monthBtn" class="secondary smallbutton" onclick="setPeriod('month')">Mês</button></div>
 </div>
 </section>
 
@@ -1452,66 +1451,69 @@ function historyDates(){
 }
 
 function renderHistory(){
+  const required=['histpontos','histTrain','histMinutes','histWater','periodtitle','xpChart','waterChart','trainChart','waterGoalDays','consistencyText','consistencyRing'];
+  if(required.some(id=>!$(id))) return;
   document.querySelectorAll('[data-hperiod]').forEach(b=>b.classList.toggle('selected',b.dataset.hperiod===period));
-  let now=new Date(),start,ds;
-  if(period==='week'){
+  let now=new Date(),start,ds=[];
+  if(period==='day'){
+    start=new Date(now.getFullYear(),now.getMonth(),now.getDate()+offset);
+    ds=[start];
+    $('periodtitle').textContent=start.toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }else if(period==='week'){
     start=startWeek(new Date(now.getFullYear(),now.getMonth(),now.getDate()+offset*7));
     ds=dates(7,start);
     $('periodtitle').textContent=fmt(ds[0])+' – '+fmt(ds[6]);
-  }else{
+  }else if(period==='month'){
     start=new Date(now.getFullYear(),now.getMonth()+offset,1);
     ds=dates(new Date(start.getFullYear(),start.getMonth()+1,0).getDate(),start);
     $('periodtitle').textContent=start.toLocaleDateString('pt-PT',{month:'long',year:'numeric'});
+  }else{
+    start=new Date(now.getFullYear()+offset,0,1);
+    let count=(new Date(start.getFullYear(),1,29).getMonth()===1)?366:365;
+    ds=dates(count,start);
+    $('periodtitle').textContent=String(start.getFullYear());
   }
 
-  if($('weekBtn')) $('weekBtn').classList.toggle('selected',period==='week');
-  if($('monthBtn')) $('monthBtn').classList.toggle('selected',period==='month');
-
-  let visible=ds.filter(dt=>key(dt)<=key());
-  let s=summary(visible);
-  let historyPoints=s.xp;
+  let todayKey=key(),visible=ds.filter(dt=>key(dt)<=todayKey);
+  let s=summary(visible),historyPoints=s.xp;
   let historyWeeks=new Set(visible.map(dt=>key(startWeek(dt))));
-  historyWeeks.forEach(wk=>{
-    let ws=parseLocalDate(wk);
-    historyPoints+=countedExerciseWeekPoints(ws)+distanceWeekPoints(ws);
-  });
+  historyWeeks.forEach(wk=>{let ws=parseLocalDate(wk);historyPoints+=countedExerciseWeekPoints(ws)+distanceWeekPoints(ws)});
   $('histpontos').textContent=historyPoints;
   $('histTrain').textContent=s.train;
   $('histMinutes').textContent=s.minutes;
   let waterRegistered=visible.filter(dt=>(Number(day(key(dt)).water)||0)>0);
   let waterTotal=waterRegistered.reduce((sum,dt)=>sum+(Number(day(key(dt)).water)||0),0);
   $('histWater').textContent=(waterRegistered.length?waterTotal/waterRegistered.length/1000:0).toFixed(1)+' L';
+  $('waterGoalDays').textContent=visible.filter(dt=>day(key(dt)).water>=goal).length+' dias ✓';
 
-  let waterDays=visible.filter(dt=>day(key(dt)).water>=goal).length;
-  $('waterGoalDays').textContent=waterDays+' dias ✓';
-
-  let complete=visible.filter(dt=>{
-    let d=day(key(dt));
-    return d.water>=goal && d.meals.length>0 && d.workouts.length>0;
-  }).length;
+  let complete=visible.filter(dt=>{let d=day(key(dt));return d.water>=goal&&d.meals.length>0&&d.workouts.length>0}).length;
   let consistency=visible.length?Math.round(complete/visible.length*100):0;
   $('consistencyText').textContent=consistency+'%';
   $('consistencyRing').style.setProperty('--p',consistency+'%');
 
-  function label(dt,i){
-    if(period==='month'){
-      let step=Math.max(1,Math.ceil(ds.length/10));
-      return (i%step===0||i===visible.length-1)?String(dt.getDate()):'';
+  function chartRows(){
+    if(period!=='year') return visible.map(dt=>{let dd=day(key(dt));return {date:dt,xp:dailyPoints(dd),water:Number(dd.water)||0,minutes:workoutMinutes(dd)}});
+    let rows=[];
+    for(let m=0;m<12;m++){
+      let md=visible.filter(dt=>dt.getMonth()===m), sm=summary(md);
+      rows.push({date:new Date(start.getFullYear(),m,1),xp:sm.xp,water:md.length?md.reduce((a,dt)=>a+(Number(day(key(dt)).water)||0),0)/md.length:0,minutes:sm.minutes});
     }
+    return rows;
+  }
+  let rows=chartRows();
+  function label(dt,i){
+    if(period==='day') return 'Hoje';
+    if(period==='year') return dt.toLocaleDateString('pt-PT',{month:'short'}).replace('.','');
+    if(period==='month'){let step=Math.max(1,Math.ceil(rows.length/10));return (i%step===0||i===rows.length-1)?String(dt.getDate()):''}
     return dt.toLocaleDateString('pt-PT',{weekday:'short'}).replace('.','');
   }
-
   function bars(elId,values,type,formatter){
     let max=Math.max(...values.map(v=>v.value),1);
-    $(elId).innerHTML=values.map((v,i)=>{
-      let h=v.value===0?3:Math.max(7,Math.round(v.value/max*100));
-      return `<div class="chartCol"><div class="chartValue">${formatter(v.value)}</div><div class="chartBarWrap"><div class="chartBar ${type}" style="height:${h}%"></div></div><div class="chartLabel">${label(v.date,i)}</div></div>`;
-    }).join('');
+    $(elId).innerHTML=values.map((v,i)=>{let h=v.value===0?3:Math.max(7,Math.round(v.value/max*100));return `<div class="chartCol"><div class="chartValue">${formatter(v.value)}</div><div class="chartBarWrap"><div class="chartBar ${type}" style="height:${h}%"></div></div><div class="chartLabel">${label(v.date,i)}</div></div>`}).join('');
   }
-
-  bars('xpChart',visible.map(dt=>({date:dt,value:xp(day(key(dt)))})),'',v=>v?v:'');
-  bars('waterChart',visible.map(dt=>({date:dt,value:day(key(dt)).water})),'water',v=>v?(v/1000).toFixed(1)+'L':'');
-  bars('trainChart',visible.map(dt=>({date:dt,value:day(key(dt)).workouts.reduce((a,w)=>a+(Number(w.min)||0),0)})),'train',v=>v?v:'');
+  bars('xpChart',rows.map(r=>({date:r.date,value:r.xp})),'',v=>v?v:'');
+  bars('waterChart',rows.map(r=>({date:r.date,value:r.water})),'water',v=>v?(v/1000).toFixed(1)+'L':'');
+  bars('trainChart',rows.map(r=>({date:r.date,value:r.minutes})),'train',v=>v?Math.round(v):'');
 }
 function exportData(){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=url;a.download='life-game-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function toggleMenu(){let n=$('appNav'),o=!n.classList.contains('open');n.classList.toggle('open',o);$('menuBackdrop').classList.toggle('open',o);}
