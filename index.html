@@ -616,12 +616,12 @@ body.home-active main{padding-bottom:92px!important}
   <div class="amadoTagline">Level up your life.</div>
 </div>
 <div class="annualHero">
-  <div class="eyebrow">🔥 CHAMA ANUAL · <span id="annualYear">2026</span></div>
+  <div class="eyebrow">🔥 CHAMA DO MÊS · <span id="annualYear">—</span></div>
   <div class="flameWrap"><span id="annualFlame">🔥</span></div>
   <div class="annualXP"><span id="annualXP">0</span> XP</div>
-  <div class="annualPct" id="annualPct">0% do máximo anual</div>
+  <div class="annualPct" id="annualPct">0% da meta mensal</div>
   <div class="annualTrack"><i id="annualBar"></i></div>
-  <div class="muted" id="annualMaxLabel">Máximo anual: — XP</div>
+  <div class="muted" id="annualMaxLabel">Meta mensal: — XP</div>
 </div>
 
 <div class="card">
@@ -651,8 +651,15 @@ body.home-active main{padding-bottom:92px!important}
 </div>
 
 <div class="card">
-  <div class="row"><h2 style="margin:0">📅 Anos anteriores</h2><span class="muted">Histórico anual</span></div>
-  <div id="annualHistory" class="yearArchive"><p class="muted">O primeiro ano ficará aqui quando começares um novo ano.</p></div>
+  <div class="row"><h2 style="margin:0">📅 Meses de <span id="archiveYearLabel"></span></h2><span class="muted">Resumo mensal</span></div>
+  <div id="annualHistory" class="yearArchive"><p class="muted">Os meses concluídos vão aparecer aqui.</p></div>
+</div>
+
+<div class="card" id="levelUpCard">
+  <div class="row"><div><div class="muted">LEVEL UP DO DIA</div><h2 style="margin:3px 0 0">🧠 <span id="levelUpDifficulty">Normal</span></h2></div><span class="pill">+1 XP</span></div>
+  <p id="levelUpQuestion" style="font-size:16px;line-height:1.5;font-weight:700"></p>
+  <div id="levelUpOptions" style="display:grid;gap:8px;margin-top:12px"></div>
+  <div id="levelUpAnswer" class="notice hidden" style="margin-top:12px"></div>
 </div>
 </section>
 <section id="food" class="hidden"><div class="muted">REGISTOS</div><h1>🍽️ Alimentação</h1></div><div class="card"><h2>Adicionar refeição</h2><form id="foodform"><label>Tipo de refeição<select id="mealtype" onchange="renderMealMode()">
@@ -993,7 +1000,8 @@ function weekDistanceKm(start){
   return total;
 }
 function distanceWeekPoints(start){return weekDistanceKm(start)>=20?2:0}
-function dailyPoints(d){return waterPoints(d)+foodPoints(d)+sweetsPoints(d)+alcoholPoints(d)+teethPoints(d)+sleepPoints(d)+spendingPoints(d)}
+function levelUpPoints(d){return d&&d.levelUpDone?1:0}
+function dailyPoints(d){return waterPoints(d)+foodPoints(d)+sweetsPoints(d)+alcoholPoints(d)+teethPoints(d)+sleepPoints(d)+spendingPoints(d)+levelUpPoints(d)}
 function weekExerciseStats(start){
   let ds=dates(7,start),gym=0,run=0,total=0;
   ds.forEach(dt=>(day(key(dt)).workouts||[]).forEach(w=>{
@@ -1033,13 +1041,20 @@ function totalPoints(year=new Date().getFullYear()){
   let weekly=allWeekStarts().filter(k=>{let st=parseLocalDate(k),end=new Date(st.getFullYear(),st.getMonth(),st.getDate()+6);return end.getFullYear()===year}).reduce((s,k)=>s+countedExerciseWeekPoints(parseLocalDate(k))+distanceWeekPoints(parseLocalDate(k)),0);
   return daily+weekly;
 }
-function annualMax(year=new Date().getFullYear()){
-  let days=((new Date(year,1,29)).getMonth()===1)?366:365;
-  return days*14+52*12;
+function monthPoints(year=new Date().getFullYear(),month=new Date().getMonth()){
+  year=Number(year);month=Number(month);
+  let prefix=year+'-'+String(month+1).padStart(2,'0')+'-';
+  let daily=allDateKeys().filter(k=>k.startsWith(prefix)).reduce((sum,k)=>sum+dailyPoints(day(k)),0);
+  let weekly=allWeekStarts().reduce((sum,k)=>{let st=parseLocalDate(k),end=new Date(st.getFullYear(),st.getMonth(),st.getDate()+6);return end.getFullYear()===year&&end.getMonth()===month?sum+countedExerciseWeekPoints(st)+distanceWeekPoints(st):sum},0);
+  return daily+weekly;
 }
-function annualFlameTarget(year=new Date().getFullYear()){
-  return Math.round(annualMax(year)*0.75);
+function monthlyMax(year=new Date().getFullYear(),month=new Date().getMonth()){
+  let days=new Date(year,month+1,0).getDate();
+  return Math.round(days*14+(days/7)*12);
 }
+function monthlyFlameTarget(year=new Date().getFullYear(),month=new Date().getMonth()){return Math.round(monthlyMax(year,month)*0.75)}
+function annualMax(year=new Date().getFullYear()){let days=((new Date(year,1,29)).getMonth()===1)?366:365;return days*14+52*12}
+function annualFlameTarget(year=new Date().getFullYear()){return Math.round(annualMax(year)*0.75)}
 function annualData(year=new Date().getFullYear()){
   if(!db._annual||typeof db._annual!=='object'||Array.isArray(db._annual))db._annual={};
   if(!db._annual[year])db._annual[year]={start:null,measurements:[]};
@@ -1063,20 +1078,20 @@ function latestMeasure(a){return a.measurements.length?a.measurements[a.measurem
 function fmtDelta(v,unit){if(v===null||!Number.isFinite(v))return '—';let sign=v>0?'+':'';return sign+v.toFixed(1).replace('.',',')+' '+unit}
 function renderAnnualDashboard(){
   if(!$('annualXP'))return;
-  let year=new Date().getFullYear(),xp=totalPoints(year),max=annualMax(year),target=annualFlameTarget(year),pct=Math.max(0,Math.min(100,xp/target*100)),a=annualData(year),latest=latestMeasure(a);
-  $('annualYear').textContent=year;$('annualXP').textContent=xp;$('annualPct').textContent=pct.toFixed(1).replace('.',',')+'% da meta da chama';$('annualBar').style.width=pct+'%';$('annualMaxLabel').textContent='Meta da chama: '+target+' XP · 75% do máximo teórico ('+max+' XP)';
+  let now=new Date(),year=now.getFullYear(),month=now.getMonth(),xp=monthPoints(year,month),max=monthlyMax(year,month),target=monthlyFlameTarget(year,month),pct=Math.max(0,Math.min(100,xp/target*100)),a=annualData(year),latest=latestMeasure(a);
+  let monthName=now.toLocaleDateString('pt-PT',{month:'long'}).toUpperCase();
+  $('annualYear').textContent=monthName+' '+year;$('annualXP').textContent=xp;$('annualPct').textContent=pct.toFixed(1).replace('.',',')+'% da meta mensal';$('annualBar').style.width=pct+'%';$('annualMaxLabel').textContent='Meta do mês: '+target+' XP · 75% do máximo teórico ('+max+' XP)';
   let size=54+(pct/100)*104;$('annualFlame').style.fontSize=size+'px';$('annualFlame').style.filter='drop-shadow(0 0 '+(16+pct*.28)+'px rgba(255,122,34,'+(0.32+pct*.004)+'))';
-  if(!a.start){$('homeWeight').textContent='—';$('homeWaist').textContent='—';$('weightDelta').textContent='Define o Dia 0';$('waistDelta').textContent='Define o Dia 0';$('checkpointLabel').textContent='Dia 0';$('saveMeasureBtn').textContent='Definir Dia 0';$('measureHint').textContent='O primeiro registo fica guardado como Dia 0. Depois podes registar a evolução ao longo do ano.'}
+  if(!a.start){$('homeWeight').textContent='—';$('homeWaist').textContent='—';$('weightDelta').textContent='Define o Dia 0';$('waistDelta').textContent='Define o Dia 0';$('checkpointLabel').textContent='Dia 0';$('saveMeasureBtn').textContent='Definir Dia 0';$('measureHint').textContent='O primeiro registo fica guardado como Dia 0. A evolução física continua anual, mesmo com a chama mensal.'}
   else{
     $('homeWeight').textContent=latest?.weight!=null?String(latest.weight).replace('.',',')+' kg':'—';$('homeWaist').textContent=latest?.waist!=null?String(latest.waist).replace('.',',')+' cm':'—';
     let dw=(latest?.weight!=null&&a.start.weight!=null)?latest.weight-a.start.weight:null,dwa=(latest?.waist!=null&&a.start.waist!=null)?latest.waist-a.start.waist:null;
     $('weightDelta').textContent=(dw===null?'Dia 0: —':'Dia 0: '+String(a.start.weight).replace('.',',')+' kg · '+fmtDelta(dw,'kg'));$('waistDelta').textContent=(dwa===null?'Dia 0: —':'Dia 0: '+String(a.start.waist).replace('.',',')+' cm · '+fmtDelta(dwa,'cm'));
-    $('checkpointLabel').textContent=measurementLabel(year,key(new Date()));$('saveMeasureBtn').textContent='Guardar medição';$('measureHint').textContent='Checkpoints sugeridos: 3, 6 e 9 meses e resultado final. Podes também registar medições intermédias.';
+    $('checkpointLabel').textContent=measurementLabel(year,key(now));$('saveMeasureBtn').textContent='Guardar medição';$('measureHint').textContent='A chama reinicia todos os meses; a evolução física mantém o Dia 0 e os checkpoints ao longo do ano.';
   }
-  $('measureWeight').value='';$('measureWaist').value='';
-  let years=new Set(allDateKeys().map(k=>Number(k.slice(0,4))));Object.keys(db._annual||{}).forEach(y=>years.add(Number(y)));years.delete(year);
-  let ys=[...years].filter(Number.isFinite).sort((a,b)=>b-a);
-  $('annualHistory').innerHTML=ys.length?ys.map(y=>{let aa=annualData(y),last=latestMeasure(aa),p=totalPoints(y),mx=annualMax(y),target=annualFlameTarget(y),pc=Math.max(0,Math.min(100,p/target*100));let w=(aa.start?.weight!=null&&last?.weight!=null)?fmtDelta(last.weight-aa.start.weight,'kg'):'—';return `<div class="entry row"><div><b>🔥 ${y}</b><div class="muted">${p} XP · ${pc.toFixed(0)}% da chama</div></div><div style="text-align:right"><b>${w}</b><div class="muted">peso</div></div></div>`}).join(''):'<p class="muted">O primeiro ano ficará aqui quando começares um novo ano.</p>';
+  $('measureWeight').value='';$('measureWaist').value='';if($('archiveYearLabel'))$('archiveYearLabel').textContent=year;
+  let rows=[];for(let m=month-1;m>=0;m--){let p=monthPoints(year,m),t=monthlyFlameTarget(year,m),pc=t?Math.max(0,Math.min(100,p/t*100)):0,n=new Date(year,m,1).toLocaleDateString('pt-PT',{month:'long'});rows.push(`<div class="entry row"><div><b>🔥 ${n.charAt(0).toUpperCase()+n.slice(1)}</b><div class="muted">${p} XP</div></div><div style="text-align:right"><b>${pc.toFixed(0)}%</b><div class="muted">da meta</div></div></div>`)}
+  $('annualHistory').innerHTML=rows.length?rows.join(''):'<p class="muted">Os meses concluídos vão aparecer aqui.</p>';
 }
 
 function rewardUses(year=new Date().getFullYear()){return (Array.isArray(db._rewardsUsed)?db._rewardsUsed:[]).filter(r=>{let d=new Date(r.date);return !Number.isNaN(d.getTime())&&d.getFullYear()===Number(year)})}
@@ -1406,6 +1421,65 @@ function renderPoints(){
   $('reward75Progress').textContent=progress+' / 60';
   $('reward75Bar').style.width=(progress/60*100)+'%';
 }
+const LEVEL_UPS=[
+{d:'Normal',q:'Um investimento sobe 50% num ano e cai 50% no seguinte. Qual é o resultado acumulado?',o:['0%','−25%','−10%'],a:1,e:'€100 passam para €150 e depois para €75. Percentagens sucessivas atuam sobre bases diferentes; por isso +50% e −50% não se anulam.'},
+{d:'🔥 Difícil',q:'Uma doença afeta 1 em 1000 pessoas. Um teste deteta todos os doentes, mas dá 5% de falsos positivos. Se o teste der positivo, qual cenário é mais provável?',o:['Ter a doença','Ser um falso positivo','São igualmente prováveis'],a:1,e:'Em 100 000 pessoas haveria cerca de 100 positivos verdadeiros e quase 5 000 falsos positivos. É a importância da taxa-base.'},
+{d:'🔥 Difícil',q:'Num concurso há 3 portas. Escolhes uma; o apresentador, que sabe a resposta, abre sempre uma porta vazia das restantes. Deves trocar?',o:['Sim','Não','É indiferente'],a:0,e:'Trocar dá 2/3 de probabilidade de ganhar; ficar mantém 1/3. A informação do apresentador não é aleatória.'},
+{d:'🧠🔥 Boss',q:'Um hospital pequeno tem 15 nascimentos/dia e um grande 150. Em qual haverá mais dias em que mais de 60% dos bebés são rapazes?',o:['Pequeno','Grande','Igual'],a:0,e:'Amostras pequenas variam mais. O hospital grande tende a ficar mais perto da proporção média — uma manifestação da lei dos grandes números.'},
+{d:'Normal',q:'Pagaste €50 por um bilhete não reembolsável. No dia do evento preferes ficar em casa. Para decidir se vais, os €50 devem pesar na decisão?',o:['Sim, para não desperdiçar','Não, já são um custo afundado','Só se o evento durar pouco'],a:1,e:'O dinheiro já não pode ser recuperado. A decisão racional compara apenas os custos e benefícios futuros de ir versus ficar.'},
+{d:'🔥 Difícil',q:'Uma nave viaja a 90% da velocidade da luz e acende os faróis para a frente. Um observador na Terra mede a luz a que velocidade?',o:['1,9c','c','0,1c'],a:1,e:'A velocidade da luz no vácuo é a mesma para observadores inerciais. Velocidades relativísticas não se somam como no quotidiano.'},
+{d:'Normal',q:'Tens uma dívida a 8% ao ano e um investimento com retorno esperado de 7% ao ano. Ignorando impostos, qual é a comparação mais correta?',o:['Investir é sempre melhor','Pagar a dívida equivale aproximadamente a evitar um custo certo de 8%','São equivalentes'],a:1,e:'Eliminar uma dívida a 8% evita um custo conhecido; os 7% do investimento são apenas esperados e envolvem risco.'},
+{d:'🔥 Difícil',q:'Porque pode a média global melhorar mesmo que a média de cada subgrupo piore?',o:['É impossível','Porque as proporções dos grupos podem mudar','Porque médias não usam todos os dados'],a:1,e:'É uma forma do paradoxo de Simpson: mudanças na composição dos grupos podem inverter a tendência observada no agregado.'},
+{d:'Normal',q:'Dois irmãos completos partilham exatamente 50% do DNA autossómico?',o:['Sempre','Não; 50% é uma média esperada','Só gémeos partilham DNA'],a:1,e:'A recombinação distribui segmentos de forma aleatória. Irmãos completos partilham em média cerca de metade, mas o valor real varia.'},
+{d:'🔥 Difícil',q:'Se o Universo tem cerca de 13,8 mil milhões de anos, como pode o Universo observável ter cerca de 93 mil milhões de anos-luz de diâmetro?',o:['A estimativa da idade está errada','O espaço expandiu-se enquanto a luz viajava','A luz já foi mais rápida'],a:1,e:'A distância atual às regiões que emitiram a luz antiga aumentou devido à expansão do próprio espaço.'},
+{d:'Normal',q:'Uma IA acerta 95% ao distinguir lobos de cães, mas quase todas as fotos de lobos tinham neve. Qual é o principal risco?',o:['Overclocking','Correlação espúria','Encriptação insuficiente'],a:1,e:'O modelo pode ter aprendido “neve = lobo” em vez das características do animal. Boa precisão no treino não garante boa generalização.'},
+{d:'🔥 Difícil',q:'Numa sala com 23 pessoas, a probabilidade de pelo menos duas fazerem anos no mesmo dia é aproximadamente...',o:['6%','23%','51%'],a:2,e:'É cerca de 50,7%. Comparam-se muitos pares possíveis, por isso a colisão torna-se provável muito antes de haver 183 pessoas.'},
+{d:'Normal',q:'Um ativo cai 80%. Quanto precisa de subir, a partir daí, para recuperar o valor inicial?',o:['80%','100%','400%'],a:2,e:'€100 → €20. Para regressar a €100 precisa de ganhar €80, que correspondem a 400% de €20.'},
+{d:'🔥 Difícil',q:'Porque é que testar a memória sem olhar para os apontamentos costuma fortalecer mais a retenção do que apenas reler?',o:['Porque cria esforço de recuperação','Porque elimina o sono','Porque reduz a memória de trabalho'],a:0,e:'O retrieval practice força a reconstrução da informação e fortalece as vias de acesso à memória.'},
+{d:'🧠🔥 Boss',q:'Tens duas caixas: A tem 2 moedas de ouro; B tem 1 de ouro e 1 de prata. Escolhes uma caixa ao acaso e tiras uma moeda: é ouro. Qual a probabilidade de a outra moeda dessa caixa também ser ouro?',o:['1/2','2/3','3/4'],a:1,e:'Há três formas igualmente possíveis de observar ouro: duas vêm da caixa A e uma da B. Em duas das três, a outra moeda é ouro.'},
+{d:'Normal',q:'Uma empresa aumenta preços 10% e depois faz desconto de 10%. O preço volta ao original?',o:['Sim','Não, fica 1% abaixo','Não, fica 1% acima'],a:1,e:'€100 → €110 → €99. A segunda percentagem aplica-se a uma base diferente.'},
+{d:'🔥 Difícil',q:'Se duas variáveis têm correlação muito alta, qual conclusão é segura?',o:['Uma causa a outra','Partilham necessariamente uma causa','Movem-se de forma associada nos dados observados, mas causalidade não está estabelecida'],a:2,e:'Correlação descreve associação. Causalidade exige desenho e evidência adicionais para excluir confundidores e outras explicações.'},
+{d:'Normal',q:'Porque é que diversificar pode reduzir risco sem necessariamente reduzir o retorno esperado na mesma proporção?',o:['Porque elimina todas as perdas','Porque riscos específicos podem compensar-se entre ativos','Porque aumenta automaticamente os juros'],a:1,e:'Riscos não perfeitamente correlacionados podem compensar-se. A diversificação reduz sobretudo risco específico, não todo o risco.'},
+{d:'🔥 Difícil',q:'Dois relógios atómicos idênticos, um ao nível do mar e outro numa montanha, permanecem perfeitamente sincronizados?',o:['Sim','Não, a gravidade altera ligeiramente a passagem do tempo','Só se um estiver em movimento'],a:1,e:'Na relatividade geral, relógios em potenciais gravitacionais diferentes acumulam tempo a ritmos ligeiramente diferentes.'},
+{d:'🧠🔥 Boss',q:'Uma moeda justa deu caras 8 vezes seguidas. Qual é a probabilidade de dar caras no próximo lançamento?',o:['Menos de 50%','50%','Mais de 50%'],a:1,e:'Se os lançamentos são independentes, o histórico não altera o próximo lançamento. Pensar que “agora tem de sair coroas” é a falácia do jogador.'},
+{d:'Normal',q:'Porque pode um salário subir 4% e, ainda assim, o poder de compra cair?',o:['Se a inflação for superior a 4%','Só se houver impostos','É impossível'],a:0,e:'O que interessa é o crescimento real. Se os preços subirem mais depressa do que o salário nominal, compras menos apesar de receberes mais euros.'},
+{d:'🔥 Difícil',q:'Um estudo observa que quem dorme 8 horas vive mais do que quem dorme 5. Isto prova que obrigar todos a dormir mais 3 horas aumenta a longevidade?',o:['Sim','Não','Só em adultos'],a:1,e:'Uma associação observacional não identifica necessariamente o efeito causal. Saúde prévia, trabalho, stress e outros fatores podem confundir a relação.'},
+{d:'Normal',q:'Porque é que €100 hoje e €100 daqui a 10 anos não têm necessariamente o mesmo valor económico?',o:['Valor temporal do dinheiro e inflação','Porque notas antigas expiram','Porque o euro muda de nome'],a:0,e:'Dinheiro disponível hoje pode ser investido e os preços podem mudar. Por isso fluxos em datas diferentes não são diretamente equivalentes.'},
+{d:'🔥 Difícil',q:'Se uma estratégia ganha 100% num ano e perde 50% no seguinte, qual é o retorno acumulado?',o:['0%','+25%','+50%'],a:0,e:'€100 → €200 → €100. A média aritmética dos retornos (+25%) não representa o crescimento composto.'},
+{d:'🧠🔥 Boss',q:'Há 100 prisioneiros e 100 caixas, cada caixa contém um número único. Cada prisioneiro pode abrir 50 caixas e todos sobrevivem apenas se todos encontrarem o próprio número. Existe estratégia muito melhor do que escolher caixas ao acaso?',o:['Não','Sim, seguir ciclos da permutação','Só se comunicarem durante o jogo'],a:1,e:'A estratégia dos ciclos transforma o problema: todos sobrevivem se a permutação não tiver ciclo maior que 50, dando uma probabilidade surpreendentemente superior ao acaso independente.'},
+{d:'Normal',q:'Porque é que um fundo com taxa anual de 1,5% pode ficar muito atrás de outro com 0,2% ao longo de décadas?',o:['As taxas acumulam-se sobre o capital todos os anos','A taxa só é cobrada no primeiro ano','A diferença desaparece com o tempo'],a:0,e:'Custos recorrentes reduzem a base que continua a capitalizar. Pequenas diferenças anuais podem tornar-se grandes por composição.'},
+{d:'🔥 Difícil',q:'Num teste A/B, verificas o resultado a cada hora e paras assim que p<0,05, sem corrigir o método. Qual é o problema?',o:['Reduzes falsos positivos','Aumentas a probabilidade de falso positivo','Não há problema'],a:1,e:'Olhar repetidamente e parar quando aparece significância altera a taxa de erro. Testes sequenciais exigem métodos próprios.'},
+{d:'Normal',q:'Porque é que “mais dados” não corrige automaticamente um conjunto de dados enviesado?',o:['Porque aumenta o mesmo viés se a amostra continuar não representativa','Porque computadores não conseguem processar muito','Porque a média deixa de existir'],a:0,e:'Uma amostra enorme pode estimar com enorme precisão a coisa errada. Quantidade reduz ruído aleatório, não necessariamente viés sistemático.'},
+{d:'🔥 Difícil',q:'Se uma decisão tem 60% de hipótese de ganhar €100 e 40% de perder €100, qual é o valor esperado monetário?',o:['€0','€20','€60'],a:1,e:'0,6×100 + 0,4×(−100) = €20. Valor esperado não significa que receberás €20 numa tentativa; é uma média de longo prazo.'},
+{d:'🧠🔥 Boss',q:'Tens duas cordas que demoram exatamente 60 minutos a arder, mas queimam a velocidades irregulares. Como medes 45 minutos?',o:['É impossível','Acender uma corda nas duas pontas e a outra numa ponta; quando a primeira acabar, acender a segunda ponta da outra','Cortar uma corda em quatro'],a:1,e:'A primeira termina em 30 min. Nesse momento, a segunda tem 30 min de combustível temporal restante; acesa também pela outra ponta, termina em 15 min. Total: 45.'},
+{d:'Normal',q:'Porque é que uma taxa de crescimento de 7% ao ano não significa simplesmente +70% em 10 anos?',o:['Por causa da capitalização','Porque 7×10 não é 70','Porque os anos têm durações diferentes'],a:0,e:'Com capitalização, cada ano cresce também sobre ganhos anteriores. A 7%, 10 anos correspondem a cerca de +97%, antes de custos e impostos.'},
+{d:'🔥 Difícil',q:'Um modelo prevê corretamente 99% dos casos numa população onde 99% pertencem à mesma classe. O que pode estar a acontecer?',o:['É necessariamente excelente','Pode apenas prever sempre a classe maioritária','Tem 99% de sensibilidade'],a:1,e:'Accuracy isolada pode ser enganadora em classes desequilibradas. É preciso olhar para métricas como sensibilidade, especificidade, precision e recall.'},
+{d:'Normal',q:'Porque é que um seguro pode ser racional mesmo tendo valor esperado financeiro negativo?',o:['Porque reduz risco de perdas grandes que seriam difíceis de suportar','Porque seguradoras perdem dinheiro em média','Porque elimina todas as probabilidades'],a:0,e:'Utilidade não é linear em dinheiro. Pagar um custo previsível pode ser racional para transferir um risco raro mas potencialmente devastador.'},
+{d:'🔥 Difícil',q:'Se uma população cresce 2% ao ano, aproximadamente quanto demora a duplicar usando a regra dos 70?',o:['~14 anos','~35 anos','~70 anos'],a:1,e:'A regra dos 70 estima o tempo de duplicação como 70 dividido pela taxa percentual: 70/2 ≈ 35 anos.'},
+{d:'🧠🔥 Boss',q:'Tens 9 bolas visualmente iguais; uma é mais pesada. Com uma balança de pratos e apenas 2 pesagens, consegues identificá-la?',o:['Não','Sim, dividindo 3-3-3','Só se souberes o peso exato'],a:1,e:'Pesa 3 contra 3. Se equilibrar, está no terceiro grupo; senão, no lado pesado. Depois pesa 1 contra 1 dentro do grupo de 3.'},
+{d:'Normal',q:'Porque é que uma empresa lucrativa pode falir por falta de caixa?',o:['Lucro contabilístico e fluxo de caixa não são a mesma coisa','Lucro nunca é dinheiro','Só empresas com prejuízo falem'],a:0,e:'Receitas podem ser reconhecidas antes de serem recebidas, enquanto salários, fornecedores e dívida exigem caixa em datas concretas.'},
+{d:'🔥 Difícil',q:'Num ensaio clínico, reduzir o risco de 2% para 1% corresponde a que redução relativa?',o:['1%','50%','100%'],a:1,e:'A redução absoluta é 1 ponto percentual; a relativa é 50%. Apresentar apenas uma delas pode mudar muito a perceção do efeito.'},
+{d:'Normal',q:'Porque é que uma previsão com intervalo “70% a 90%” pode ser mais útil do que dizer simplesmente “80%”?',o:['Expõe a incerteza da estimativa','É sempre mais precisa','Elimina erros'],a:0,e:'Uma estimativa pontual esconde incerteza. Intervalos ajudam a perceber a gama plausível e a tomar decisões robustas.'},
+{d:'🔥 Difícil',q:'Se todos os cisnes que observaste são brancos, qual é a conclusão logicamente mais forte?',o:['Todos os cisnes são brancos','A evidência apoia a hipótese, mas não a prova universalmente','A cor é aleatória'],a:1,e:'Observações repetidas podem aumentar confiança, mas uma afirmação universal pode ser refutada por um único contraexemplo.'},
+{d:'🧠🔥 Boss',q:'Três interruptores estão fora de uma sala; só um liga a lâmpada dentro. Podes mexer nos interruptores à vontade, mas entrar na sala apenas uma vez. Como identificas o certo?',o:['Não é possível','Usar luz e calor da lâmpada','Ligar os três'],a:1,e:'Liga um durante alguns minutos e desliga-o; liga outro e entra. Acesa = segundo; apagada mas quente = primeiro; apagada e fria = terceiro.'}
+];
+function levelUpForDate(dt=new Date()){
+  let start=new Date(dt.getFullYear(),0,1),n=Math.floor((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-start)/86400000);
+  // A sequência é determinística por data; o banco roda sem depender da internet.
+  return LEVEL_UPS[n%LEVEL_UPS.length];
+}
+function answerLevelUp(i){
+  let d=day(key(new Date())),lu=levelUpForDate(new Date()),correct=Number(i)===lu.a;
+  if(!d.levelUpDone){d.levelUpDone=true;d.levelUpChoice=Number(i);save()}else{d.levelUpChoice=Number(i)}
+  renderLevelUp();render();
+}
+function renderLevelUp(){
+  if(!$('levelUpQuestion'))return;let today=new Date(),d=day(key(today)),lu=levelUpForDate(today);
+  $('levelUpDifficulty').textContent=lu.d;$('levelUpQuestion').textContent=lu.q;
+  $('levelUpOptions').innerHTML=lu.o.map((x,i)=>`<button type="button" class="secondary${d.levelUpChoice===i?' selected':''}" onclick="answerLevelUp(${i})">${x}</button>`).join('');
+  if(d.levelUpDone){let ok=d.levelUpChoice===lu.a;$('levelUpAnswer').classList.remove('hidden');$('levelUpAnswer').innerHTML=`<b>${ok?'✅ Certo':'💡 Resposta: '+lu.o[lu.a]}</b><br>${lu.e}<br><span class="muted">+1 XP por teres feito o Level Up de hoje.</span>`}else{$('levelUpAnswer').classList.add('hidden');$('levelUpAnswer').innerHTML=''}
+}
+
 function render(){
   updateDateSelector();
   let d=day(key(selectedDate));
@@ -1422,6 +1496,7 @@ function render(){
   if($('homemeals'))$('homemeals').textContent=(homeDay.meals||[]).length;
   if($('homexp'))$('homexp').textContent=(dailyPoints(homeDay)>0?'+':'')+dailyPoints(homeDay)+' XP';
   renderAnnualDashboard();
+  renderLevelUp();
   renderTodayChecklist();
   renderRestDay(d);
   if($('dailyPointsBreakdown')){
