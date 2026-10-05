@@ -597,6 +597,8 @@ body.home-active main{padding-bottom:92px!important}
 .measureForm{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.measureForm label{margin:0}.measureForm button{grid-column:1/-1}
 .yearArchive{margin-top:10px}.yearArchive .entry{align-items:flex-start}
 .mealFour{grid-template-columns:1fr 1fr!important}
+
+.todayChecklist{display:grid;gap:8px;margin-top:12px}.todayItem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;border:1px solid var(--border);border-radius:14px;background:#202431;cursor:pointer}.todayItem .todayLeft{display:flex;align-items:center;gap:10px;min-width:0}.todayItem .todayIcon{font-size:18px}.todayItem .todayText b{display:block}.todayItem .todayText span{font-size:12px;color:var(--muted)}.todayItem .todayArrow{color:var(--muted);font-size:18px}.restToggle{width:100%;margin-top:10px;background:#303449}.restToggle.selected{background:#596070}.todayDone{border-color:rgba(68,190,120,.35)}
 @media(max-width:420px){.annualXP{font-size:36px}.flameWrap{height:170px}.evolutionGrid{grid-template-columns:1fr 1fr}.measureForm{grid-template-columns:1fr 1fr}}
 </style>\n</head><body><main>
 <div class="daySelector">
@@ -640,6 +642,12 @@ body.home-active main{padding-bottom:92px!important}
   <div class="row"><div><div class="muted">HOJE</div><h2 style="margin:3px 0 0">Resumo rápido</h2></div><div class="big" id="homexp">0</div></div>
   <div class="grid" style="margin-top:10px"><div class="evolutionStat"><div class="muted">💧 Água</div><div class="value" id="homewater">0 L</div></div><div class="evolutionStat"><div class="muted">🏋️ Treino</div><div class="value" id="hometrain">0 min</div></div></div>
   <p class="muted" style="margin-bottom:0">Usa o botão <b>☰ Menu</b> para registar refeições, treino, água, sono e os restantes tópicos.</p>
+</div>
+
+<div class="card">
+  <div class="row"><div><div class="muted">CHECK-IN DIÁRIO</div><h2 style="margin:3px 0 0">📋 O que já registaste hoje</h2></div><span class="pill" id="todayCheckCount">0/4</span></div>
+  <p class="muted">Um resumo rápido para não te esqueceres dos mínimos. Toca numa linha para abrir o respetivo registo.</p>
+  <div id="todayChecklist" class="todayChecklist"></div>
 </div>
 
 <div class="card">
@@ -753,7 +761,13 @@ body.home-active main{padding-bottom:92px!important}
 <div id="distanceField" class="hidden"><label>Distância em quilómetros (km)<input id="traindistance" type="number" min="0.1" max="500" step="0.1" placeholder="Ex.: 5"></label></div>
 <label id="durationField">Duração (minutos)<input id="trainduration" type="number" min="1" max="1440" required placeholder="45"></label>
 <button type="submit">Guardar treino</button>
-</form></div><div class="card"><h2>Treinos do dia</h2><div id="trainlist"></div></div>
+</form></div>
+<div class="card">
+  <h2>🛋️ Hoje não treino</h2>
+  <p class="muted">Marca um dia de descanso para distinguires “não treinei” de “ainda não registei”. Não dá nem tira pontos.</p>
+  <button type="button" id="restDayBtn" class="restToggle" onclick="toggleRestDay()">Marcar dia de descanso</button>
+</div>
+<div class="card"><h2>Treinos do dia</h2><div id="trainlist"></div></div>
 <div class="card">
   <h2>🏆 Pontuação semanal</h2>
   <div class="weekExercise">
@@ -1215,7 +1229,7 @@ $('trainform').onsubmit=e=>{
   let min=distance?0:Number($('trainduration').value);
   if(distance&&(!km||km<=0)){alert('Indica a distância em km.');return}
   if(!distance&&(!min||min<=0)){alert('Indica a duração do treino.');return}
-  edit(d=>d.workouts.push({type,min,km,muscles:isGymType()?[...selectedMuscles]:[]}));
+  edit(d=>{d.restDay=false;d.workouts.push({type,min,km,muscles:isGymType()?[...selectedMuscles]:[]})});
   selectedMuscles=[];document.querySelectorAll('[data-muscle]').forEach(b=>b.classList.remove('selected'));
   $('traindistance').value='';$('trainduration').value='';renderGymFields();
 };
@@ -1336,6 +1350,39 @@ function renderSleep(d){
     ?'Ainda sem registo · 7–8 h = +1 · menos de 7 h = −1 · mais de 8 h = 0'
     :`✓ Guardado: <b>${h} h</b> · ${p>0?'+1 ponto':p<0?'−1 ponto':'0 pontos'}`;
 }
+function openTab(tab){
+  const b=document.querySelector(`nav button[data-tab="${tab}"]`);
+  if(b)b.click();
+}
+function toggleRestDay(){
+  edit(d=>{
+    d.restDay=!d.restDay;
+    if(d.restDay && Array.isArray(d.workouts) && d.workouts.length) d.restDay=false;
+  });
+}
+function renderTodayChecklist(){
+  if(!$('todayChecklist'))return;
+  const d=day(key(new Date()));
+  const meals=Array.isArray(d.meals)?d.meals.length:0;
+  const workouts=Array.isArray(d.workouts)?d.workouts.length:0;
+  const water=Number(d.water)||0;
+  const hasSleep=d.sleep!==undefined&&d.sleep!==null&&d.sleep!=='';
+  const items=[
+    {tab:'food',icon:'🍽️',name:'Alimentação',done:meals>0,detail:meals?`${meals} ${meals===1?'refeição registada':'refeições registadas'}`:'Por registar'},
+    {tab:'exercise',icon:'🏋️',name:'Treino',done:workouts>0||d.restDay===true,detail:workouts?`${workouts} ${workouts===1?'treino registado':'treinos registados'}`:d.restDay===true?'Dia de descanso':'Por registar'},
+    {tab:'water',icon:'💧',name:'Água',done:water>0,detail:water>0?`${(water/1000).toFixed(1)} / 2,5 L`:'Por registar'},
+    {tab:'sleep',icon:'😴',name:'Sono',done:hasSleep,detail:hasSleep?`${Number(d.sleep)} h registadas`:'Por registar'}
+  ];
+  $('todayCheckCount').textContent=items.filter(x=>x.done).length+'/'+items.length;
+  $('todayChecklist').innerHTML=items.map(x=>`<div class="todayItem ${x.done?'todayDone':''}" onclick="openTab('${x.tab}')"><div class="todayLeft"><span class="todayIcon">${x.done?'✅':'⬜'}</span><div class="todayText"><b>${x.icon} ${x.name}</b><span>${x.detail}</span></div></div><span class="todayArrow">›</span></div>`).join('');
+}
+function renderRestDay(d){
+  if(!$('restDayBtn'))return;
+  const hasWorkout=Array.isArray(d.workouts)&&d.workouts.length>0;
+  $('restDayBtn').disabled=hasWorkout;
+  $('restDayBtn').classList.toggle('selected',d.restDay===true);
+  $('restDayBtn').textContent=hasWorkout?'Treino já registado':d.restDay===true?'✓ Dia de descanso registado':'Marcar dia de descanso';
+}
 function renderExerciseWeek(){
   if(!$('weekGym'))return;
   let ws=startWeek(selectedDate),s=weekExerciseStats(ws),p=exerciseWeekPoints(ws);
@@ -1371,6 +1418,8 @@ function render(){
   if($('homemeals'))$('homemeals').textContent=(homeDay.meals||[]).length;
   if($('homexp'))$('homexp').textContent=(dailyPoints(homeDay)>0?'+':'')+dailyPoints(homeDay)+' XP';
   renderAnnualDashboard();
+  renderTodayChecklist();
+  renderRestDay(d);
   if($('dailyPointsBreakdown')){
     let hasWater=(Number(d.water)||0)>0;
     let hasFood=Array.isArray(d.meals)&&d.meals.length>0;
