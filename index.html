@@ -889,33 +889,6 @@ body.home-active main{padding-bottom:92px!important}
   </div>
 </div>
 </section>
-<section id="restaurants" class="hidden">
-<div class="muted">O TEU GUIA</div><h1>🍴 Restaurantes</h1>
-  <div class="histStat"><div class="icon">🔖</div><div class="value" id="wishlistCount">0</div><div class="muted">Quero ir</div></div>
-  <div class="histStat"><div class="icon">⭐</div><div class="value" id="restaurantAvg">—</div><div class="muted">Avaliação média</div></div>
-  <div class="histStat"><div class="icon">🍽️</div><div class="value" id="visitCount">0</div><div class="muted">Visitas registadas</div></div>
-</div>
-
-<div class="card">
-  <h2>Adicionar restaurante</h2>
-  <form id="restaurantForm">
-    <label>Nome<input id="restaurantName" required maxlength="120" placeholder="Nome do restaurante"></label>
-    <label>Estado<select id="restaurantStatus"><option value="wishlist">Quero ir</option><option value="visited">Já fui</option></select></label>
-    <label>Nota<textarea id="restaurantNote" maxlength="400" placeholder="Ex.: experimentar o hambúrguer, recomendado por..."></textarea></label>
-    <button type="submit">Guardar restaurante</button>
-  </form>
-</div>
-
-<div class="segment">
-  <button id="visitedTab" class="selected" onclick="setRestaurantView('visited')">✅ Já fui</button>
-  <button id="wishlistTab" onclick="setRestaurantView('wishlist')">🔖 Quero ir</button>
-</div>
-<div class="card"><div id="restaurantList"></div></div>
-
-<div class="card"><h2>ℹ️ Pontos</h2><p class="muted">Os restaurantes não dão nem retiram pontos. Esta área serve para guardar onde já foste, avaliações e locais que queres experimentar.</p></div>
-<div class="histGrid">
-  <div class="histStat"><div class="icon">✅</div><div class="value" id="visitedCount">0</div><div class="muted">Já fui</div></div>
-</section>
 <section id="rewards" class="hidden">
 <div class="muted">PRÉMIOS</div><h1>🎁 Recompensas</h1>
   <p class="muted">O Pontos totais não é gasto. As recompensas são acumuladas separadamente.</p>
@@ -937,10 +910,10 @@ body.home-active main{padding-bottom:92px!important}
   <h2>Próxima recompensa</h2>
   <div class="row"><b id="rewardprogress">0 / 60 pontos</b><span class="pill" id="rewardmissing">Faltam 60 pontos</span></div>
   <div class="bar"><div id="rewardbar"></div></div>
-</section></main><div id="menuBackdrop" onclick="closeMenu()"></div><button id="menuToggle" type="button" onclick="toggleMenu()">☰ Menu · <span id="menuCurrent">Início</span></button><nav id="appNav"><button data-tab="home" class="active"><span>🏠</span>Início</button><button data-tab="food"><span>🍽️</span>Comida</button><button data-tab="exercise"><span>🏋️</span>Treino</button><button data-tab="water"><span>💧</span>Água</button><button data-tab="sleep"><span>😴</span>Sono</button><button data-tab="spending"><span>💸</span>Gastos</button><button data-tab="restaurants"><span>🍴</span>Restaurantes</button><button data-tab="rewards"><span>🎁</span>Prémios</button><button data-tab="history"><span>📊</span>Histórico</button></nav><script>
+</section></main><div id="menuBackdrop" onclick="closeMenu()"></div><button id="menuToggle" type="button" onclick="toggleMenu()">☰ Menu · <span id="menuCurrent">Início</span></button><nav id="appNav"><button data-tab="home" class="active"><span>🏠</span>Início</button><button data-tab="food"><span>🍽️</span>Comida</button><button data-tab="exercise"><span>🏋️</span>Treino</button><button data-tab="water"><span>💧</span>Água</button><button data-tab="sleep"><span>😴</span>Sono</button><button data-tab="spending"><span>💸</span>Gastos</button><button data-tab="rewards"><span>🎁</span>Prémios</button><button data-tab="history"><span>📊</span>Histórico</button></nav><script>
 const $=id=>document.getElementById(id),storage='amadoXPFinalV1',goal=2500;
 let db={};try{db=JSON.parse(localStorage.getItem(storage))||{}}catch{}
-let period='week',offset=0,selectedDate=new Date(),mealMode='healthy',smallMealMode='ok',mealPlace='home',restaurantView='visited';
+let period='week',offset=0,selectedDate=new Date(),mealMode='healthy',smallMealMode='ok',mealPlace='home';
 function key(d=new Date()){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function day(k=key(selectedDate)){
   let d=db[k];
@@ -1109,19 +1082,6 @@ function useReward(){
 function escape(s){let el=document.createElement('span');el.textContent=String(s);return el.innerHTML}
 
 
-function restaurants(){if(!db._restaurants||typeof db._restaurants!=='object'||Array.isArray(db._restaurants))db._restaurants={};return db._restaurants}
-function restaurantId(name){return String(name).trim().toLocaleLowerCase('pt-PT')}
-function touchRestaurant(name,date,source){
-  name=String(name||'').trim();if(!name)return;
-  let rs=restaurants(),id=restaurantId(name),r=rs[id]||{name,status:'visited',rating:0,note:'',visits:[]};
-  r.name=name;r.status='visited';if(!Array.isArray(r.visits))r.visits=[];
-  r.visits.push({date:key(date),source:source||'restaurant'});
-  rs[id]=r;
-}
-function undoRestaurantVisit(name,date){
-  let rs=restaurants(),r=rs[restaurantId(name)];if(!r||!Array.isArray(r.visits))return;
-  let k=key(date),i=r.visits.findIndex(v=>v.date===k);if(i>=0)r.visits.splice(i,1);
-}
 function parseLocalDate(v){let [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d)}
 function updateDateSelector(){
   let today=key(new Date()),sel=key(selectedDate);
@@ -1235,7 +1195,7 @@ $('foodform').onsubmit=e=>{
   }
   let k=key(selectedDate);db[k]=day(k);
   db[k].meals.push({type:$('mealtype').value,desc:$('mealdesc').value.trim(),mode:chosenMode,rewardUsed:usedReward,place:mealPlace,restaurant:restaurantName});
-  if(restaurantName)touchRestaurant(restaurantName,selectedDate,mealPlace);
+
   localStorage.setItem(storage,JSON.stringify(db));
   $('mealdesc').value='';$('mealrestaurant').value='';$('mealtype').value='Almoço';mealMode='healthy';smallMealMode='ok';mealPlace='home';render();
 };
@@ -1267,7 +1227,7 @@ function removeEntry(type,i){
       });
       if(idx>=0)db._rewardsUsed.splice(idx,1);
     }
-    if(entry.restaurant)undoRestaurantVisit(entry.restaurant,selectedDate);
+
   }
 
   d[type].splice(i,1);
@@ -1287,55 +1247,6 @@ function summary(ds){
   let points=v.reduce((s,d)=>s+dailyPoints(d),0);
   return {water,train,minutes,meals,xp:points};
 }
-
-function setRestaurantView(v){restaurantView=v;renderRestaurants()}
-function stars(n){n=Number(n)||0;return '★'.repeat(n)+'☆'.repeat(5-n)}
-function rateRestaurant(id,n){
-  let r=restaurants()[id];if(!r)return;
-  r.rating=Math.max(1,Math.min(5,Number(n)||0));
-  save();
-}
-function moveRestaurant(id,status){let r=restaurants()[id];if(r){r.status=status;save()}}
-function deleteRestaurant(id){
-  let r=restaurants()[id];if(!r)return;
-  if(confirm('Apagar '+r.name+' da lista de restaurantes?')){
-    delete db._restaurants[id];
-    localStorage.setItem(storage,JSON.stringify(db));
-    renderRestaurants();
-  }
-}
-function renderRestaurants(){
-  if(!$('restaurantList'))return;
-  let rs=restaurants(),all=Object.entries(rs),visited=all.filter(([id,r])=>r.status==='visited'),wish=all.filter(([id,r])=>r.status==='wishlist');
-  let ratings=visited.map(([id,r])=>Number(r.rating)||0).filter(Boolean);
-  $('visitedCount').textContent=visited.length;$('wishlistCount').textContent=wish.length;
-  $('restaurantAvg').textContent=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1):'—';
-  $('visitCount').textContent=visited.reduce((s,[id,r])=>s+(Array.isArray(r.visits)?r.visits.length:0),0);
-  $('visitedTab').classList.toggle('selected',restaurantView==='visited');$('wishlistTab').classList.toggle('selected',restaurantView==='wishlist');
-  let list=(restaurantView==='visited'?visited:wish).sort((a,b)=>{
-    if(restaurantView==='visited')return (Number(b[1].rating)||0)-(Number(a[1].rating)||0);
-    return a[1].name.localeCompare(b[1].name,'pt');
-  });
-  $('restaurantList').innerHTML=list.length?list.map(([id,r])=>{
-    let visits=Array.isArray(r.visits)?r.visits.length:0;
-    let last=visits?r.visits[r.visits.length-1].date:'';
-    return `<div class="restaurantCard">
-      <div class="row"><div><b>${escape(r.name)}</b>${restaurantView==='visited'?`<div class="muted">${visits} visita${visits===1?'':'s'}${last?' · última '+last:''}</div>`:''}</div><button class="danger" onclick="deleteRestaurant('${id.replace(/'/g,"\\'")}')">Apagar</button></div>
-      ${restaurantView==='visited'?`<div style="margin-top:10px"><div class="muted">Avaliação</div><div class="stars">${[1,2,3,4,5].map(n=>`<button type="button" class="secondary smallbutton" onclick="rateRestaurant('${id.replace(/'/g,"\\'")}',${n})">${n<=(Number(r.rating)||0)?'★':'☆'} ${n}</button>`).join('')}</div></div>`:''}
-      ${r.note?`<div class="muted" style="margin-top:7px">${escape(r.note)}</div>`:''}
-      <div class="restaurantMeta">
-        ${restaurantView==='wishlist'?`<button class="secondary smallbutton" onclick="moveRestaurant('${id.replace(/'/g,"\\'")}','visited')">✓ Marcar como visitado</button>`:`<span class="tag">⭐ ${r.rating||'sem avaliação'}</span>`}
-      </div>
-    </div>`
-  }).join(''):'<p class="muted">'+(restaurantView==='visited'?'Ainda não tens restaurantes visitados.':'Ainda não tens restaurantes na lista “Quero ir”.')+'</p>';
-}
-$('restaurantForm').onsubmit=e=>{
-  e.preventDefault();let name=$('restaurantName').value.trim(),id=restaurantId(name),rs=restaurants(),old=rs[id];
-  rs[id]={name,status:$('restaurantStatus').value,rating:old?.rating||0,note:$('restaurantNote').value.trim(),visits:old?.visits||[]};
-  localStorage.setItem(storage,JSON.stringify(db));$('restaurantName').value='';$('restaurantNote').value='';restaurantView=$('restaurantStatus').value;render();
-};
-
-
 
 function setSpending(v){edit(d=>d.spending=v)}
 function renderSpending(d){
@@ -1560,7 +1471,7 @@ function render(){
   if($('waterweek'))$('waterweek').innerHTML=dates(7,new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate()-6)).map(dt=>`<div class="entry row"><span>${fmt(dt)}</span><b>${Number(day(key(dt)).water)||0} ml</b></div>`).join('');
 
   renderMealMode();renderMealPlace();renderSweets(d);renderAlcohol(d);renderTeeth(d);renderSleep(d);renderSpending(d);
-  renderGymFields();renderExerciseWeek();renderPoints();renderRestaurants();renderRewards();renderHistory();
+  renderGymFields();renderExerciseWeek();renderPoints();renderRewards();renderHistory();
 }
 function renderRewards(){
   let total=totalPoints(),points=rewardPoints(),available=availableRewards(),used=rewardUses(),progress=((points%60)+60)%60;
@@ -1654,7 +1565,7 @@ function renderHistory(){
 function exportData(){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=url;a.download='life-game-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function toggleMenu(){let n=$('appNav'),o=!n.classList.contains('open');n.classList.toggle('open',o);$('menuBackdrop').classList.toggle('open',o);}
 function closeMenu(){$('appNav').classList.remove('open');$('menuBackdrop').classList.remove('open');}
-const tabNames={home:'Início',food:'Comida',exercise:'Treino',water:'Água',sleep:'Sono',spending:'Gastos',restaurants:'Restaurantes',rewards:'Prémios',history:'Histórico'};
+const tabNames={home:'Início',food:'Comida',exercise:'Treino',water:'Água',sleep:'Sono',spending:'Gastos',rewards:'Prémios',history:'Histórico'};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');document.querySelectorAll('nav button').forEach(n=>n.classList.toggle('active',n===b));$('menuCurrent').textContent=tabNames[b.dataset.tab]||'Menu';document.body.classList.toggle('home-active',b.dataset.tab==='home');closeMenu();window.scrollTo({top:0,behavior:'smooth'});render()});document.body.classList.add('home-active');render();
 </script>
 <script>
